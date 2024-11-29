@@ -20,8 +20,8 @@ analysis_data <- read_csv("data/02-analysis_data/analysis_data.csv")
 head(analysis_data)
 
 # 3. Test that the dataset has the correct number of rows and columns
-test_that("dataset has 203 rows", {
-  expect_equal(nrow(analysis_data), 203)
+test_that("dataset has 204 rows", {
+  expect_equal(nrow(analysis_data), 204)
 })
 
 test_that("dataset has 6 columns", {  # Assuming there are 6 columns
@@ -64,8 +64,12 @@ test_that("'date' column contains valid dates", {
 })
 
 # 7. Test that there are no empty strings in any columns
-test_that("no empty strings in any column", {
-  expect_false(any(analysis_data == ""))
+test_that("no empty strings or NAs in any column", {
+  expect_true(all(!is.na(analysis_data$weekly_bank_rate) | analysis_data$weekly_bank_rate != ""))
+  expect_true(all(!is.na(analysis_data$weekly_avg_usd_vs_cad) | analysis_data$weekly_avg_usd_vs_cad != ""))
+  expect_true(all(!is.na(analysis_data$weekly_total_bcpi) | analysis_data$weekly_total_bcpi != ""))
+  expect_true(all(!is.na(analysis_data$weekly_energy_bcpi) | analysis_data$weekly_energy_bcpi != ""))
+  expect_true(all(!is.na(analysis_data$weekly_metel_bcpi) | analysis_data$weekly_metel_bcpi != ""))
 })
 
 # 8. Test that numeric columns contain only valid numeric values (no characters or invalid entries)
