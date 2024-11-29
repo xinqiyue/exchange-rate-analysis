@@ -7,63 +7,74 @@
 # Pre-requisites: [...UPDATE THIS...]
 # Any other information needed? [...UPDATE THIS...]
 
-
 #### Workspace setup ####
-library(tidyverse)
+# Load necessary libraries
+library(readr)
 library(testthat)
+library(dplyr)
 
-data <- read_csv("data/02-analysis_data/analysis_data.csv")
+# 1. Read the CSV file into analysis_data
+analysis_data <- read_csv("data/02-analysis_data/analysis_data.csv")
 
+# 2. View the first few rows to check if the data is loaded correctly
+head(analysis_data)
 
-#### Test data ####
-# Test that the dataset has 151 rows - there are 151 divisions in Australia
-test_that("dataset has 151 rows", {
-  expect_equal(nrow(analysis_data), 151)
+# 3. Test that the dataset has the correct number of rows and columns
+test_that("dataset has 203 rows", {
+  expect_equal(nrow(analysis_data), 203)
 })
 
-# Test that the dataset has 3 columns
-test_that("dataset has 3 columns", {
-  expect_equal(ncol(analysis_data), 3)
+test_that("dataset has 6 columns", {  # Assuming there are 6 columns
+  expect_equal(ncol(analysis_data), 6)
 })
 
-# Test that the 'division' column is character type
-test_that("'division' is character", {
-  expect_type(analysis_data$division, "character")
+# 4. Test that each column is of the expected type
+test_that("'date' is Date type", {
+  expect_type(analysis_data$date, "double") # R read dates as numeric type by default
 })
 
-# Test that the 'party' column is character type
-test_that("'party' is character", {
-  expect_type(analysis_data$party, "character")
+test_that("'weekly_bank_rate' is numeric", {
+  expect_type(analysis_data$weekly_bank_rate, "double")
 })
 
-# Test that the 'state' column is character type
-test_that("'state' is character", {
-  expect_type(analysis_data$state, "character")
+test_that("'weekly_avg_usd_vs_cad' is numeric", {
+  expect_type(analysis_data$weekly_avg_usd_vs_cad, "double")
 })
 
-# Test that there are no missing values in the dataset
+test_that("'weekly_total_bcpi' is numeric", {
+  expect_type(analysis_data$weekly_total_bcpi, "double")
+})
+
+test_that("'weekly_energy_bcpi' is numeric", {
+  expect_type(analysis_data$weekly_energy_bcpi, "double")
+})
+
+test_that("'weekly_metel_bcpi' is numeric", {
+  expect_type(analysis_data$weekly_metel_bcpi, "double")
+})
+
+# 5. Test that there are no missing values in the dataset
 test_that("no missing values in dataset", {
   expect_true(all(!is.na(analysis_data)))
 })
 
-# Test that 'division' contains unique values (no duplicates)
-test_that("'division' column contains unique values", {
-  expect_equal(length(unique(analysis_data$division)), 151)
+# 6. Test that the 'date' column contains valid date values (check the range of dates)
+test_that("'date' column contains valid dates", {
+  expect_true(all(analysis_data$date >= as.Date("2021-01-01")))
 })
 
-# Test that 'state' contains only valid Australian state or territory names
-valid_states <- c("New South Wales", "Victoria", "Queensland", "South Australia", "Western Australia", 
-                  "Tasmania", "Northern Territory", "Australian Capital Territory")
-test_that("'state' contains valid Australian state names", {
-  expect_true(all(analysis_data$state %in% valid_states))
+# 7. Test that there are no empty strings in any columns
+test_that("no empty strings in any column", {
+  expect_false(any(analysis_data == ""))
 })
 
-# Test that there are no empty strings in 'division', 'party', or 'state' columns
-test_that("no empty strings in 'division', 'party', or 'state' columns", {
-  expect_false(any(analysis_data$division == "" | analysis_data$party == "" | analysis_data$state == ""))
+# 8. Test that numeric columns contain only valid numeric values (no characters or invalid entries)
+test_that("numeric columns contain valid numeric values", {
+  expect_true(all(is.numeric(analysis_data$weekly_bank_rate)))
+  expect_true(all(is.numeric(analysis_data$weekly_avg_usd_vs_cad)))
+  expect_true(all(is.numeric(analysis_data$weekly_total_bcpi)))
+  expect_true(all(is.numeric(analysis_data$weekly_energy_bcpi)))
+  expect_true(all(is.numeric(analysis_data$weekly_metel_bcpi)))
 })
 
-# Test that the 'party' column contains at least 2 unique values
-test_that("'party' column contains at least 2 unique values", {
-  expect_true(length(unique(analysis_data$party)) >= 2)
-})
+

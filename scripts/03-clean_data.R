@@ -9,36 +9,67 @@
 
 #### Workspace setup ####
 library(tidyverse)
+library(lubridate)
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+weekly_bank_rate_data <- read_csv("data/01-raw_data/weekly_bank_rate_raw_data.csv")
+daily_exchange_rate_data <- read_csv("data/01-raw_data/daily_exchange_rate_raw_data.csv")
+weekly_BCPI_data <- read_csv("data/01-raw_data/weekly_BCPI_raw_data.csv")
 
-cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
+# 1. Clean weekly_bank_rate_data
+weekly_bank_rate_data <- weekly_bank_rate_data |>
+  janitor::clean_names() |> # Standardize column names (lowercase, snake_case)
+  tidyr::drop_na() |> # Remove rows with missing values
+  rename(weekly_bank_rate = v80691310) |> # Rename column for clarity
+  mutate(date = ymd(date)) # Convert the date column to Date format
+
+# 2. Clean and aggregate daily_exchange_rate_data to weekly averages
+weekly_exchange_rate_data <- daily_exchange_rate_data |>
+  janitor::clean_names() |> # Standardize column names
+  select(date, fxusdcad) |> # Keep only date and FXUSDCAD columns
+  tidyr::drop_na() |> # Remove rows with missing values
+  mutate(date = ymd(date)) |> # Convert the date column to Date format
+  filter(date > as.Date("2021-01-01")) |> # Filter rows after January 1, 2021
+  rename(usd_vs_cad = fxusdcad) |> # Rename column for clarity
   mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
+    date = date + days(3 - wday(date, week_start = 1)) # Group by week
   ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+  group_by(date) |>  # Group by the new weekly column
+  summarise(weekly_avg_usd_vs_cad = mean(usd_vs_cad, na.rm = TRUE)) |> # Calculate weekly averages
+  ungroup() # Ungroup to finalize the data frame
+
+# 3. Clean weekly_BCPI_data and select specific columns
+weekly_BCPI_data <- weekly_BCPI_data |> 
+  janitor::clean_names() |> # Standardize column names
+  select(date, w_bcpi, w_ener, w_mtls) |> # Keep only specified columns
+  tidyr::drop_na() |> # Remove rows with missing values
+  mutate(date = ymd(date)) |> # Convert the date column to Date format
+  filter(date > as.Date("2021-01-01")) |> # Filter rows after January 1, 2021
+  rename(weekly_total_bcpi = w_bcpi, 
+         weekly_energy_bcpi = w_ener, 
+         weekly_metel_bcpi = w_mtls)
+
+# 4. Combine all datasets by date
+cleaned_data <- weekly_bank_rate_data |>
+  full_join(weekly_exchange_rate_data, by = "date") |> # Merge with exchange rate data
+  full_join(weekly_BCPI_data, by = "date") # Merge with BCPI data
+
+# Clean the combined data
+cleaned_data <- cleaned_data |> 
+  tidyr::drop_na() # Remove rows with missing values
+
+# Convert columns to numeric and remove rows with NA after conversion
+cleaned_data$weekly_total_bcpi <- as.numeric(cleaned_data$weekly_total_bcpi)
+cleaned_data$weekly_energy_bcpi <- as.numeric(cleaned_data$weekly_energy_bcpi)
+cleaned_data$weekly_metel_bcpi <- as.numeric(cleaned_data$weekly_metel_bcpi)
+
+# Remove rows where any of the numeric columns are NA (after conversion)
+cleaned_data <- cleaned_data |> 
+  filter(
+    !is.na(weekly_total_bcpi) & 
+      !is.na(weekly_energy_bcpi) & 
+      !is.na(weekly_metel_bcpi)
+  )
 
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(cleaned_data, "data/02-analysis_data/analysis_data.csv")
