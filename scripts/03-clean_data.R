@@ -10,6 +10,7 @@
 #### Workspace setup ####
 library(tidyverse)
 library(lubridate)
+library(arrow)
 
 #### Clean data ####
 weekly_bank_rate_data <- read_csv("data/01-raw_data/weekly_bank_rate_raw_data.csv")
@@ -72,4 +73,4 @@ cleaned_data <- cleaned_data |>
   )
 
 #### Save data ####
-write_csv(cleaned_data, "data/02-analysis_data/analysis_data.csv")
+write_parquet(cleaned_data, "data/02-analysis_data/analysis_data.parquet")
