@@ -1,14 +1,15 @@
 ---
-title: "Examining the Key Drivers of CAD/USD Exchange Rate: The Role of BCPI and Interest Rates in Canada's Economy"
-subtitle: "My subtitle if needed"
+title: "Comparing the Impact of BCPI and Interest Rates on the CAD/USD Exchange Rate: A Model-Based Analysis of Key Drivers"
+subtitle: "Higher bank rates and commodity prices weaken the Canadian dollar, while rising energy prices strengthen it."
 author: 
   - Xinqi Yue
 thanks: "Code and data are available at: https://github.com/xinqiyue/exchange-rate-analysis."
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This study examines the factors influencing the USD/CAD exchange rate, focusing on the impact of Canadian bank rates and commodity prices. The analysis shows that higher bank rates and rising commodity prices, especially metal and total BCPI, are linked to a weaker Canadian dollar. In contrast, higher energy prices are associated with a stronger Canadian dollar. These findings are important for policymakers and investors as they help understand the key drivers of currency fluctuations and their broader economic effects."
 format: pdf
 number-sections: true
+toc: true
 bibliography: references.bib
 ---
 
@@ -21,43 +22,53 @@ library(ggplot2)
 library(readr)
 library(gridExtra)
 library(arrow)
+library(car)
+library(kableExtra)
+library(modelsummary)
+library(knitr)
 ```
+
 
 ```{r}
 #| include: false
 #| warning: false
 #| message: false
 analysis_data <- read_parquet("../data/02-analysis_data/analysis_data.parquet")
+model <- readRDS("../models/weekly_total_model.rds")
+model2 <- readRDS("../models/weekly_partial_model.rds")
 ```
 
-# Introduction
+# Introduction {#sec-intro}
 
 ## Overview
 The relationship between exchange rates, commodity prices, and interest rates is important in the economic dynamics of countries dependent on trade. For Canada, one of the world’s largest commodity producers, the exchange rate of the Canadian dollar (CAD) against the U.S. dollar (USD) is influenced by multiple factors, including global commodity prices and domestic interest rates. These variables not only affect Canada’s economic stability but also impact the broader global economy. Given Canada’s close trade ties with the United States, particularly in energy and metals, understanding the relationship between these factors is important for policymakers, traders, and economists alike.
 
 ## Estimand
-This paper aims to estimate how the Bank of Canada Commodity Price Index (BCPI) and interest rates affect the CAD/USD exchange rate. The BCPI is categorized into various sub-indices, with particular focus on energy and metal BCPI, as these sectors represent key export areas for Canada. Linear regression analysis is used to examine the relationships between the CAD/USD exchange rate and the BCPI subcategories, as well as interest rates. The study seeks to determine the relative influence of these economic variables on the CAD/USD exchange rate.
+The estimand of this analysis is the relationship between the USD/CAD exchange rate and four key predictors: the weekly bank rate, as well as the weekly BCPI indices (total, energy, and metal). The goal is to estimate how changes in the bank rate and fluctuations in global commodity prices, as captured by the BCPI, influence the value of the Canadian dollar relative to the U.S. dollar. Specifically, the analysis aims to quantify the effect of the bank rate on exchange rate movements and examine how the commodity prices (total, energy, and metal BCPI) contribute to the variability in the CAD/USD exchange rate.
 
 ## Results
-The analysis finds a significant relationship between energy and metal prices, interest rates, and the CAD/USD exchange rate. Changes in energy and metal commodity prices, closely tied to Canada’s export performance, have a measurable effect on the value of the Canadian dollar relative to the U.S. dollar. These findings suggest that fluctuations in global commodity prices, particularly in energy and metals, play an important role in driving the CAD/USD exchange rate, with interest rates also contributing to these dynamics.
+The analysis indicates that bank rates are positively associated with a depreciation of the Canadian dollar, which contradicts traditional economic theory. Commodity prices, particularly metal BCPI and total BCPI, are also positively related to a weaker Canadian dollar. However, energy BCPI shows a negative relationship with the exchange rate, suggesting that rising energy prices may help strengthen the Canadian dollar. Overall, higher bank rates and commodity prices are linked to a weaker Canadian dollar, with the effect of energy prices differing from other commodity indices.
+
 
 ## Why it matters
 Understanding the factors that influence the CAD/USD exchange rate is important for Canadian policymakers, as well as traders and economists. Since Canada is heavily reliant on exports, particularly in the energy and metal sectors, shifts in the exchange rate can have wide-reaching implications for trade, inflation, and economic growth. By understanding the impact of BCPI subcategories on the exchange rate, Canadian policymakers can make more informed decisions regarding monetary policy and economic strategy, ensuring greater stability in trade relations with the U.S.
 
 ## Telegraphing
-The remainder of this paper is structured as follows: Section 2 reviews the relevant literature on exchange rates and commodity prices, Section 3 outlines the methodology used for the linear regression analysis, Section 4 presents the results and discusses their implications, and Section 5 concludes with policy recommendations and areas for future research.
+The structure of this paper is as follows: @sec-intro provides an overview of the research topic and key objectives. In @sec-data, we outline the data sources and variables used for the analysis, including details on exchange rates, interest rates, and commodity price indices. The @sec-model section describes the model setup and justifications for selecting specific variables and methodologies. In @sec-result, we present the key findings of the regression analysis, including model performance and coefficient interpretations. The @sec-discussion section follows, where we explore the implications of the results, address potential limitations, and propose future research directions. Finally, @sec-appx offer additional details on the data, model diagnostics, and methodology used in the study.
 
+## Software
+This paper used R [@citeR] for data analysis, including data download and clean, regression diagnostics, model set up and summaries, and data visualization.
+
+- **data cleaning** The tidyverse package was used for efficient data manipulation and visualization (@tidyverse), lubridate was employed for handling date-time operations (@lubridate), and arrow facilitated reading and writing large data sets in parquet format (@arrow).
+
+- **visualization**: Ggplot2 [@ggplot2], gridExtra [@gridExtra], knitr[@knitr] and kableExtra [@kableExtra] packages to generate and optimize the graphs and tables in this analysis.
+
+- **model**: The car [@car] and modelsummary [@modelsummary] packages were used for regression diagnostics and model summaries.
 
 # Data {#sec-data}
 
 ## Overview
-For this study, three primary data sets were used to explore the relationship between the Canadian dollar (CAD) and U.S. dollar (USD) exchange rate, commodity prices (via the Bank of Canada Commodity Price Index - BCPI), and interest rates. The data was collected from multiple publicly available sources: weekly exchange rates between the CAD and USD, weekly BCPI data from the Bank of Canada, and the Bank of Canada’s weekly interest rates. The exchange rate data set provides the value of the CAD against the USD, while the BCPI data set includes subcategories such as the total BCPI, energy BCPI, and metal BCPI. The interest rates data set provides the weekly bank rates set by the Bank of Canada.
-
-The data was processed and analyzed in R using several key R packages, including:
-- `readr` for reading CSV files,
-- `dplyr` for data manipulation and cleaning,
-- `ggplot2` for data visualization, and
-- `lm` (base R) for performing linear regression analysis.
+For this study, three primary data sets were used to explore the relationship between the Canadian dollar (CAD) and U.S. dollar (USD) exchange rate, commodity prices (via the Bank of Canada Commodity Price Index - BCPI), and interest rates. The data was collected from multiple publicly available sources: weekly exchange rates between the CAD and USD, weekly BCPI data from the Bank of Canada, and the Bank of Canada’s weekly interest rates. The exchange rate data set provides the value of the CAD against the USD [@bankofcanada_daily_exchange_rates], while the BCPI data set includes subcategories such as the total BCPI, energy BCPI, and metal BCPI [@bankofcanada_bcpi]. The interest rates data set provides the weekly bank rates set by the Bank of Canada [@BankOfCanadaInterestRates]. The BCPI is categorized into various types, with particular focus on energy and metal BCPI, as these sectors are main export areas for Canada. 
 
 ## Measurement
 The data set used in this study includes variables related to exchange rates, bank rates, and the Bank of Canada Commodity Price Index (BCPI), which encompasses total, energy, and metal components. Below is a description of how these variables were measured and collected from their respective sources.
@@ -97,11 +108,15 @@ In summary, the measurement process involves collecting data from authoritative 
 ### Weekly Average USD/CAD Exchange Rate
 This variable represents the average exchange rate of the Canadian dollar (CAD) against the U.S. dollar (USD) over each week. It captures the value of one USD in terms of CAD. 
 
+@fig-exchange-rate-trend illustrates the fluctuations in the exchange rate between the U.S. dollar (USD) and the Canadian dollar (CAD) from January 1, 2021, to November 27, 2024. While the exchange rate experiences fluctuations, the overall trend shows an increase, indicating that the value of the Canadian dollar relative to the U.S. dollar has been weakening over this period. In other words, more Canadian dollars are needed to purchase one U.S. dollar as time progresses.
+
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
-#| fig-width: 12
+#| fig-width: 10
+#| label: fig-exchange-rate-trend
+#| fig-cap:  As time progresses, the amount of Canadian dollars (CAD) that can be exchanged for one U.S. dollar (USD) increases, indicating a overall decreasing trend in the value of the Canadian dollar relative to the U.S. dollar
 ggplot(analysis_data, aes(x = date, y = weekly_avg_usd_vs_cad)) +
   geom_line(color = "#1f77b4", size = 1) +  # Line with custom color and size
   labs(
@@ -123,15 +138,18 @@ ggplot(analysis_data, aes(x = date, y = weekly_avg_usd_vs_cad)) +
 ## Predictor variables
 
 ### Weekly Bank Rate
-#### Definition
-Represents the benchmark interest rate set by the Bank of Canada, typically used as a reference for short-term inter bank loans. This rate reflects the stance of monetary policy and plays a significant role in influencing exchange rates.  
+Weekly Bank Rate represents the benchmark interest rate set by the Bank of Canada, typically used as a reference for short-term inter bank loans. This rate reflects the stance of monetary policy and plays a significant role in influencing exchange rates.  
 - **Unit**: Percentage (%).
+
+@fig-bank-rate-trend shows the trends in the weekly bank rate from January 2021 to November 2024. The rate steadily increased over time, reaching its highest level between mid-2023 and mid-2024. After this peak, the rate began to decrease, suggesting a shift in monetary policy or economic conditions that led to a reduction in the bank rate. The fluctuations reflect changes in the central bank's approach to managing the economy during this period.
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
-#| fig-width: 12
+#| fig-width: 10
+#| fig-cap: Weekly bank rate from 2021 to November 2024, showing an overall increase with a peak in mid-2023 to mid-2024, followed by a decline.
+#| label: fig-bank-rate-trend
 ggplot(analysis_data, aes(x = date, y = weekly_bank_rate)) +
   geom_line(color = "#1f77b4", size = 1) +  # Line with custom color and size
   labs(
@@ -146,24 +164,55 @@ ggplot(analysis_data, aes(x = date, y = weekly_bank_rate)) +
   ) +
   theme(
     plot.title = element_text(hjust = 0.5),
-    axis.text.x = element_text(angle = 45, hjust = 1)
+    #axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
 ```
 
-### Weekly Total BCPI
-#### Definition
-Represents the overall Bank of Canada Commodity Price Index (BCPI), which aggregates the prices of 26 key commodities produced in Canada and traded globally. The total BCPI reflects fluctuations in the overall price of Canadian export commodities, affecting export revenues and currency value.  
-- **Unit**: Index Points (base year 1972 = 100).
-
+@fig-bank-agaist-exchange shows the relationship between the Weekly Bank Rate and the Weekly Average USD/CAD Exchange Rate. The data points show a positive trend, and the linear regression line suggests that as the weekly bank rate increases, the USD/CAD exchange rate also tends to rise. This indicates a positive correlation between the two variables. The upward slope of the regression line suggests that higher bank rates may have a tendency to push the exchange rate higher.
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-width: 10
+#| fig-cap: There is a positive relationship between the weekly bank rate and the USD/CAD exchange rate, with a linear regression line indicating upward trends.
+#| label: fig-bank-agaist-exchange
+# Scatter plot: Weekly Bank Rate vs Weekly Average USD/CAD Exchange Rate
+ggplot(analysis_data, aes(y = weekly_avg_usd_vs_cad, x = weekly_bank_rate)) +
+  geom_point(
+    color = "#ffb0bb",        # Color of the points
+    size = 1,              # Size of the points
+    alpha = 1.           # Transparency of the points
+  ) +
+  labs(
+    title = "Relationship Between Weekly Bank Rate and USD/CAD Exchange Rate",
+    y = "Weekly Average USD/CAD Exchange Rate",
+    x = "Weekly Bank Rate"
+  ) +
+  theme_minimal() +  # Clean theme
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14),  # Center title and adjust size
+    #axis.text.x = element_text(angle = 45, hjust = 1),   # Rotate x-axis labels for readability
+    axis.title = element_text(size = 12)                 # Larger axis titles
+  ) +
+  geom_smooth(method = "lm", se = FALSE, color = "black", size = 1) +  # Add linear regression line
+  scale_x_continuous(labels = scales::comma)  # Format x-axis to display commas for readability
+```
+
+
+### Weekly Total BCPI
+Weekly Total BCPI represents the overall Bank of Canada Commodity Price Index (BCPI), which aggregates the prices of 26 key commodities produced in Canada and traded globally. The total BCPI reflects fluctuations in the overall price of Canadian export commodities, affecting export revenues and currency value.  
+- **Unit**: Index Points (base year 1972 = 100).
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+#| fig-cap: Weekly Total BCPI and USD/CAD exchange rate trends over time, with BCPI peaking in mid-2022 and declining after that.
 # Plot 1: Weekly Total BCPI
 plot_bcpi <- ggplot(analysis_data) +
-  geom_line(aes(x = date, y = weekly_total_bcpi), color = "blue", size = 1) +
+  geom_line(aes(x = date, y = weekly_total_bcpi), color = "black", size = 1) +
   labs(
     title = "Weekly Total BCPI",
     x = "Date",
@@ -181,7 +230,7 @@ plot_bcpi <- ggplot(analysis_data) +
 
 # Plot 2: Weekly Average USD/CAD Exchange Rate
 plot_usd_cad <- ggplot(analysis_data) +
-  geom_line(aes(x = date, y = weekly_avg_usd_vs_cad), color = "red", size = 1) +
+  geom_line(aes(x = date, y = weekly_avg_usd_vs_cad), color = "pink", size = 1) +
   labs(
     title = "Weekly Average USD/CAD Exchange Rate",
     x = "Date",
@@ -201,11 +250,55 @@ plot_usd_cad <- ggplot(analysis_data) +
 grid.arrange(plot_bcpi, plot_usd_cad, nrow = 2)
 ```
 
+@fig-total-bcpi-and-exchange presents a combined time-series plot of the Weekly Total BCPI and the Weekly Average USD/CAD Exchange Rate on the same timeline but with separate y-axes. The BCPI reaches its highest value around mid-2022 before experiencing a steady decline. Meanwhile, the USD/CAD exchange rate shows fluctuations throughout the observed period, with no apparent pattern that aligns with the BCPI's trends. This lack of correlation indicates that changes in the commodity price index do not directly correspond to movements in the exchange rate over time.
+
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
-#| fig-width: 12
+#| fig-cap: Weekly Total BCPI and USD/CAD exchange rate trends over time, with BCPI peaking in mid-2022 and declining after that. No clear relationship between the two variables is observed.
+#| label: fig-total-bcpi-and-exchange
+#| fig-width: 8
+# Plot Weekly Total BCPI and Weekly Average USD/CAD Exchange Rate on one graph with dual y-axes
+ggplot(analysis_data, aes(x = date)) +
+  geom_line(aes(y = analysis_data$weekly_total_bcpi), color = "black", size = 1) +  # BCPI on the primary y-axis
+  geom_line(aes(y = analysis_data$weekly_avg_usd_vs_cad * max(analysis_data$weekly_total_bcpi, na.rm = TRUE) / 
+                   max(analysis_data$weekly_avg_usd_vs_cad, na.rm = TRUE)), 
+            color = "pink", size = 1) +  # USD/CAD scaled to match BCPI
+  scale_y_continuous(
+    name = "BCPI",  # Primary y-axis label
+    sec.axis = sec_axis(
+      ~ . * max(analysis_data$weekly_avg_usd_vs_cad, na.rm = TRUE) / max(analysis_data$weekly_total_bcpi, na.rm = TRUE), 
+      name = "USD/CAD Exchange Rate"  # Secondary y-axis label
+    )
+  ) +
+  labs(
+    title = "Weekly Total BCPI and USD/CAD Exchange Rate Trends",
+    x = "Date"
+  ) +
+  scale_x_date(
+    date_breaks = "1 year",  # Show one tick per year
+    date_labels = "%Y"  # Format x-axis labels as years
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    #axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels to prevent overlap
+    axis.title.y.left = element_text(color = "black"),  # Left y-axis color matches BCPI line
+    axis.title.y.right = element_text(color = "#ff909b")   # Right y-axis color matches USD/CAD line
+  )
+```
+
+
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| include: false
 # Normalize Weekly Total BCPI and Weekly Average USD/CAD Exchange Rate
 analysis_data <- analysis_data %>%
   mutate(
@@ -237,105 +330,70 @@ ggplot(analysis_data) +
     labels = c("Normalized Total BCPI", "Normalized USD/CAD Exchange Rate")
   ) +
   guides(color = guide_legend(title = "Variable"))
-
 ```
 
-### Weekly Energy BCPI
-#### Definition
-Includes the price index of energy-related commodities such as crude oil, natural gas, and coal. Energy is one of the main sectors of Canada’s exports, and changes in energy prices may impact Canada’s economic performance and the strength of its currency.  
-- **Unit**: Index Points (base year 1972 = 100).
+@fig-total-bcpi-scatter shows the relationship between the Weekly Total BCPI and the Weekly Average USD/CAD Exchange Rate. Each point represents an observed data point, with a linear regression line fitted to show the overall trend. The downward slope of the regression line indicates a negative relationship: as the Total BCPI increases, the USD/CAD exchange rate tends to decrease. This suggests that higher commodity prices might correspond to a stronger Canadian dollar (lower USD/CAD exchange rate).
+
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
-#| fig-width: 12
-# Normalize Weekly Total BCPI and Weekly Average USD/CAD Exchange Rate
-analysis_data <- analysis_data %>%
-  mutate(
-    normalized_energy_bcpi = weekly_energy_bcpi / max(weekly_energy_bcpi, na.rm = TRUE),
-    normalized_usd_cad = weekly_avg_usd_vs_cad / max(weekly_avg_usd_vs_cad, na.rm = TRUE)
-  )
-
-# Plot normalized data
-ggplot(analysis_data) +
-  geom_line(aes(x = date, y = normalized_energy_bcpi), color = "pink", size = 1, linetype = "solid") +
-  geom_line(aes(x = date, y = normalized_usd_cad), color = "black", size = 1, linetype = "solid") +
-  labs(
-    title = "Normalized Comparison of Weekly Energy BCPI and Weekly Average USD/CAD Exchange Rate",
-    x = "Date",
-    y = "Normalized Values"
-  ) +
-  scale_x_date(
-    date_breaks = "1 year",  # Show one tick per year
-    date_labels = "%Y"  # Format x-axis labels as years
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5),
-    axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels to prevent overlap
-    legend.position = "top"
-  ) +
-  scale_color_manual(
-    values = c("pink", "black"),
-    labels = c("Normalized Energy BCPI", "Normalized USD/CAD Exchange Rate")
-  ) +
-  guides(color = guide_legend(title = "Variable"))
-
-```
-
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-#| fig-width: 12
-# Scatter plot: Weekly Energy BCPI vs Weekly Average USD/CAD Exchange Rate
-ggplot(analysis_data, aes(x = weekly_avg_usd_vs_cad, y = weekly_energy_bcpi)) +
+#| fig-width: 10
+#| fig-cap: Relationship between the Weekly Total BCPI and the USD/CAD exchange rate, showing a downward trend in the fitted line.
+#| label: fig-total-bcpi-scatter
+# Scatter plot: Weekly Total BCPI vs Weekly Average USD/CAD Exchange Rate
+ggplot(analysis_data, aes(y = weekly_avg_usd_vs_cad, x = weekly_total_bcpi)) +
   geom_point(
-    color = "blue",        # Color of the points
+    color = "#ffb0bb",        # Color of the points
     size = 1,              # Size of the points
-    alpha = 0.6           # Transparency of the points
+    alpha = 1.           # Transparency of the points
   ) +
   labs(
-    title = "Relationship Between Weekly Energy BCPI and USD/CAD Exchange Rate",
-    x = "Weekly Average USD/CAD Exchange Rate",
-    y = "Weekly Energy BCPI"
+    title = "Relationship Between Weekly Total BCPI and USD/CAD Exchange Rate",
+    y = "Weekly Average USD/CAD Exchange Rate",
+    x = "Weekly Total BCPI"
   ) +
   theme_minimal() +  # Clean theme
   theme(
     plot.title = element_text(hjust = 0.5, size = 14),  # Center title and adjust size
-    axis.text.x = element_text(angle = 45, hjust = 1),   # Rotate x-axis labels for readability
+    axis.text.y = element_text(angle = 45, hjust = 1),   # Rotate x-axis labels for readability
     axis.title = element_text(size = 12)                 # Larger axis titles
   ) +
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1) +  # Add linear regression line
+  geom_smooth(method = "lm", se = FALSE, color = "black", size = 1) +  # Add linear regression line
   scale_x_continuous(labels = scales::comma)  # Format x-axis to display commas for readability
 ```
 
-### Weekly Metal BCPI
-#### Definition
-Includes the price index of metals and minerals such as gold, copper, nickel, and aluminum. These commodities are key components of Canada’s mining sector, and their price volatility may indirectly influence exchange rates.  
-- **Unit**: Index Points (base year 1972 = 100).  
+
+### Weekly Energy BCPI
+Weekly Energy BCPI is defined as the price index of energy-related commodities such as crude oil, natural gas, and coal. Energy is one of the main sectors of Canada’s exports, and changes in energy prices may impact Canada’s economic performance and the strength of its currency.  
+- **Unit**: Index Points (base year 1972 = 100).
+
+@fig-energy-bcpi-and-exchange presents a dual y-axis plot displaying the Weekly Energy BCPI and the Weekly Average USD/CAD Exchange Rate. The Energy BCPI reaches its highest value around mid-2022 and gradually declines after that, showing a trend similar to the Total BCPI. The USD/CAD exchange rate fluctuates throughout the period, but there is no apparent direct relationship between the exchange rate and the Energy BCPI. This suggests that the changes in the energy-related BCPI do not correlate with fluctuations in the USD/CAD exchange rate during the observed time.
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
-#| fig-width: 12
-# Normalize Weekly Total BCPI and Weekly Average USD/CAD Exchange Rate
-analysis_data <- analysis_data %>%
-  mutate(
-    normalized_metal_bcpi = weekly_metel_bcpi / max(weekly_metel_bcpi, na.rm = TRUE),
-    normalized_usd_cad = weekly_avg_usd_vs_cad / max(weekly_avg_usd_vs_cad, na.rm = TRUE)
-  )
-
-# Plot normalized data
-ggplot(analysis_data) +
-  geom_line(aes(x = date, y = normalized_metal_bcpi), color = "pink", size = 1, linetype = "solid") +
-  geom_line(aes(x = date, y = normalized_usd_cad), color = "black", size = 1, linetype = "solid") +
+#| fig-cap: Weekly Energy BCPI and USD/CAD exchange rate trends over time, with Energy BCPI peaking in mid-2022 and declining after that. No clear relationship between the two variables is observed.
+#| label: fig-energy-bcpi-and-exchange
+#| fig-width: 8
+# Plot Weekly Energy BCPI and Weekly Average USD/CAD Exchange Rate on one graph with dual y-axes
+ggplot(analysis_data, aes(x = date)) +
+  geom_line(aes(y = analysis_data$weekly_energy_bcpi), color = "black", size = 1) +  # BCPI on the primary y-axis
+  geom_line(aes(y = analysis_data$weekly_avg_usd_vs_cad * max(analysis_data$weekly_energy_bcpi, na.rm = TRUE) / 
+                   max(analysis_data$weekly_avg_usd_vs_cad, na.rm = TRUE)), 
+            color = "pink", size = 1) +  # USD/CAD scaled to match BCPI
+  scale_y_continuous(
+    name = "Energy BCPI",  # Primary y-axis label
+    sec.axis = sec_axis(
+      ~ . * max(analysis_data$weekly_avg_usd_vs_cad, na.rm = TRUE) / max(analysis_data$weekly_energy_bcpi, na.rm = TRUE), 
+      name = "USD/CAD Exchange Rate"  # Secondary y-axis label
+    )
+  ) +
   labs(
-    title = "Normalized Comparison of Weekly Metal BCPI and Weekly Average USD/CAD Exchange Rate",
-    x = "Date",
-    y = "Normalized Values"
+    title = "Weekly Energy BCPI and USD/CAD Exchange Rate Trends",
+    x = "Date"
   ) +
   scale_x_date(
     date_breaks = "1 year",  # Show one tick per year
@@ -344,183 +402,456 @@ ggplot(analysis_data) +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5),
-    axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels to prevent overlap
-    legend.position = "top"
-  ) +
-  scale_color_manual(
-    values = c("pink", "black"),
-    labels = c("Normalized Metal BCPI", "Normalized USD/CAD Exchange Rate")
-  ) +
-  guides(color = guide_legend(title = "Variable"))
-
+    #axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels to prevent overlap
+    axis.title.y.left = element_text(color = "black"),  # Left y-axis color matches BCPI line
+    axis.title.y.right = element_text(color = "#ff909b")   # Right y-axis color matches USD/CAD line
+  )
 ```
+
+@fig-ener-exchange-scatter depicts the relationship between the Weekly Energy BCPI and the Weekly Average USD/CAD Exchange Rate. The regression line shows a slight negative slope, suggesting a weak inverse relationship between the two variables. As the Weekly Energy BCPI increases, the USD/CAD exchange rate tends to decrease slightly, though the correlation remains weak. Despite the visible trend, the scatter of data points indicates considerable variability, implying that other factors likely influence the exchange rate beyond the Energy BCPI.
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
-#| fig-width: 12
-# Scatter plot: Weekly Metal BCPI vs Weekly Average USD/CAD Exchange Rate
-ggplot(analysis_data, aes(x = weekly_avg_usd_vs_cad, y = weekly_metel_bcpi)) +
+#| fig-width: 9
+#| fig-cap: Relationship between Weekly Energy BCPI and Weekly Average USD/CAD Exchange Rate. The scatter plot shows a slight negative correlation between the two variables, with the regression line indicating a slight downward slope.
+#| label: fig-ener-exchange-scatter
+# Scatter plot: Weekly Energy BCPI vs Weekly Average USD/CAD Exchange Rate
+ggplot(analysis_data, aes(y = weekly_avg_usd_vs_cad, x = weekly_energy_bcpi)) +
   geom_point(
-    color = "blue",     # Color of the points
-    size = 1,                # Size of the points
-    alpha = 0.6              # Transparency of the points
+    color = "#ffb0bb",        # Color of the points
+    size = 1,              # Size of the points
+    alpha = 1.           # Transparency of the points
+  ) +
+  labs(
+    title = "Relationship Between Weekly Energy BCPI and USD/CAD Exchange Rate",
+    y = "Weekly Average USD/CAD Exchange Rate",
+    x = "Weekly Energy BCPI"
+  ) +
+  theme_minimal() +  # Clean theme
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14),  # Center title and adjust size
+   # axis.text.y = element_text(angle = 45, hjust = 1),   # Rotate x-axis labels for readability
+    axis.title = element_text(size = 12)                 # Larger axis titles
+  ) +
+  geom_smooth(method = "lm", se = FALSE, color = "black", size = 1) +  # Add linear regression line
+  scale_x_continuous(labels = scales::comma)  # Format x-axis to display commas for readability
+```
+
+### Weekly Metal BCPI
+Weekly Metal BCPI is the price index of metals and minerals such as gold, copper, nickel, and aluminum. These commodities are key components of Canada’s mining sector, and their price volatility may indirectly influence exchange rates.  
+- **Unit**: Index Points (base year 1972 = 100).  
+
+@fig-metal-bcpi-and-exchange illustrates the relationship between Weekly Metal BCPI and the USD/CAD exchange rate over time. The Metal BCPI shows a clear upward trend at the beginning, peaking in March 2023, and then decreasing. By February 2024, the index almost reaches its lowest point, similar to its level in January 2021, before beginning to rise again. The USD/CAD exchange rate is plotted on the secondary y-axis, but no strong correlation is observed between the two variables, suggesting that fluctuations in the Metal BCPI may directly align with movements in the exchange rate over this period.
+
+```{r}
+#| label: fig-metal-bcpi-and-exchange
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-cap: The trends of Weekly Metal BCPI and the USD/CAD exchange rate, with the Metal BCPI showing an increase until peaking around March 2023, followed by a decline, almost reaching its lowest point in February 2024 before starting to rise again. No clear relationship between the two variables is observed from this graph.
+#| fig-width: 8
+
+# Plot Weekly Energy BCPI and Weekly Average USD/CAD Exchange Rate on one graph with dual y-axes
+ggplot(analysis_data, aes(x = date)) +
+  geom_line(aes(y = analysis_data$weekly_metal_bcpi), color = "black", size = 1) +  # BCPI on the primary y-axis
+  geom_line(aes(y = analysis_data$weekly_avg_usd_vs_cad * max(analysis_data$weekly_metal_bcpi, na.rm = TRUE) / 
+                   max(analysis_data$weekly_avg_usd_vs_cad, na.rm = TRUE)), 
+            color = "pink", size = 1) +  # USD/CAD scaled to match BCPI
+  scale_y_continuous(
+    name = "Metal BCPI",  # Primary y-axis label
+    sec.axis = sec_axis(
+      ~ . * max(analysis_data$weekly_avg_usd_vs_cad, na.rm = TRUE) / max(analysis_data$weekly_metal_bcpi, na.rm = TRUE), 
+      name = "USD/CAD Exchange Rate"  # Secondary y-axis label
+    )
+  ) +
+  labs(
+    title = "Weekly Metal BCPI and USD/CAD Exchange Rate Trends",
+    x = "Date"
+  ) +
+  scale_x_date(
+    date_breaks = "1 year",  # Show one tick per year
+    date_labels = "%Y"  # Format x-axis labels as years
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    #axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels to prevent overlap
+    axis.title.y.left = element_text(color = "black"),  # Left y-axis color matches BCPI line
+    axis.title.y.right = element_text(color = "#ff909b")   # Right y-axis color matches USD/CAD line
+  )
+```
+
+@fig-metal-scatter shows the relationship between Weekly Metal BCPI and the USD/CAD exchange rate. A clear downward trend is observed, with the linear regression line sloping negatively. This suggests that as the Weekly Metal BCPI increases, the USD/CAD exchange rate tends to decrease. 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-cap: There us a negative relationship between Weekly Metal BCPI and the USD/CAD exchange rate, with a downward slope in the linear regression line indicating an inverse trend.
+#| label: fig-metal-scatter
+# Scatter plot: Weekly Metal BCPI vs Weekly Average USD/CAD Exchange Rate
+ggplot(analysis_data, aes(y = weekly_avg_usd_vs_cad, x = weekly_metal_bcpi)) +
+  geom_point(
+    color = "#ffb0bb",        # Color of the points
+    size = 1,              # Size of the points
+    alpha = 1.           # Transparency of the points
   ) +
   labs(
     title = "Relationship Between Weekly Metal BCPI and USD/CAD Exchange Rate",
-    x = "Weekly Average USD/CAD Exchange Rate",
-    y = "Weekly Metal BCPI"
+    y = "Weekly Average USD/CAD Exchange Rate",
+    x = "Weekly Metal BCPI"
   ) +
   theme_minimal() +  # Clean and minimal theme
   theme(
     plot.title = element_text(hjust = 0.5, size = 14),  # Center the title and adjust size
-    axis.text.x = element_text(angle = 45, hjust = 1),   # Rotate x-axis labels for readability
+    #axis.text.x = element_text(angle = 45, hjust = 1),   # Rotate x-axis labels for readability
     axis.title = element_text(size = 12)                 # Larger axis titles for clarity
   ) +
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1) +  # Add a linear regression line
+  geom_smooth(method = "lm", se = FALSE, color = "black", size = 1) +  # Add a linear regression line
   scale_x_continuous(labels = scales::comma)  # Format x-axis with commas for better readability
 
 ```
 
 
-```{r}
-```
+# Model {#sec-model}
+## Model Set-Up {#sec-modset}
 
+This analysis aims to predict the USD/CAD exchange rate using four key economic variables: bank rate, metal BCPI, energy BCPI, and total BCPI. We employ a multiple linear regression model to examine how these predictors relate to the exchange rate and identify the most significant drivers for currency fluctuations.
 
+We define the model as follows:
 
-# Model
+$$
+\text{USD/CAD}_{t} = \beta_0 + \beta_1 \cdot \text{Bank Rate}_{t} + \beta_2 \cdot \text{Metal BCPI}_{t} + \beta_3 \cdot \text{Energy BCPI}_{t} + \epsilon_t
+$$
 
-The goal of our modelling strategy is twofold. Firstly,...
+$$
+\text{USD/CAD}_{t} = \beta_0 + \beta_1 \cdot \text{Bank Rate}_{t} + \beta_4 \cdot \text{Total BCPI}_{t} + \epsilon_t
+$$
 
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+Where:
 
-## Model set-up
+- $\text{USD/CAD}_{t}$ is the predicted exchange rate at time $t$
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+- $\beta_0$ is the intercept term
 
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
+- $\beta_1, \beta_2, \beta_3, \beta_4$ represent the coefficients for each predictor (bank rate, metal BCPI, energy BCPI, total BCPI)
 
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+- $\epsilon_t$ is the error term at time $t$.
 
+This model quantifies the relationship between the exchange rate and the four predictors, allowing us to evaluate when the exchange rate is most favorable for converting Canadian dollars to U.S. dollars.
 
-### Model justification
+## Model Justification 
 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+We chose linear regression (LM) over models like GLM, Bayesian methods, and logistic regression for the following reasons:
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
+1. **Simplicity and Interpretability**: Linear regression is simple and its coefficients provide clear, direct interpretation of how predictors affect the dependent variable. More complex models would complicate this understanding.
 
+2. **Data Compatibility**: The response variable is continuous, making linear regression the best fit. GLM and logistic regression would not be suitable, as GLM requires assumptions about the error distribution and link functions, while logistic regression is for binary outcomes.
 
-# Results
+3. **Computational Efficiency**: Linear regression is computationally efficient and quick to fit, whereas Bayesian and GLM approaches require more resources and time.
 
-Our results are summarized in @tbl-modelresults.
+4. **Assumption Fit**: Diagnostic tests confirmed that linear regression assumptions (linearity, homoscedasticity, normal residuals) were met, making it a good fit for the data set.
+
+Overall, linear regression is the most effective model for this analysis due to its simplicity, speed, and adequacy for continuous data.
+
+## Assumptions
+1. **Linearity**: We assume that the relationship between the predictors (bank rate, metal BCPI, energy BCPI, and total BCPI) and the dependent variable, the weekly USD/CAD exchange rate, is linear. From @fig-residuals-fitted, both models show no clear pattern, supporting the linearity assumption.
+
+2. **Independence of Errors**: The residuals in the model are assumed to be independent of one another. This means that there is no autocorrelation between consecutive residuals, which is a typical assumption in time series modeling. Violations of this assumption could indicate that the model has not captured some form of time dependency (e.g., lagged effects of one predictor on another), which may require adjustments such as the inclusion of lag terms or a more appropriate time-series model. From @fig-residuals-time, both models do not exhibit a discernible trend, suggesting that the independence assumption is satisfied.
+
+3. **Homoscedasticity**: The residuals ($\epsilon_t$) are assumed to be independent and identically distributed with constant variance (homoscedasticity). From @fig-residuals-fitted, we know the assumption is satisfied since the plot shows a random scatter of points with no discernible pattern, which indicates that the variance is constant. 
+
+4. **No Multicollinearity**: The predictors used in the model are assumed not to be highly correlated with each other. High correlation between predictors can lead to multicollinearity, which can inflate the variance of the coefficient estimates and make it difficult to determine the individual effect of each predictor on the exchange rate. From @fig-vif1 and @fig-vif2, the Variance Inflation Factor (VIF) are low, which means the assumption is satisfied. 
+
+5. **Normality of Residuals**: The residuals of the model are assumed to be normally distributed. From @fig-qq-plot, the QQ plot is approximately a straight line, which indicates that the assumption is satisfied for both of the model. 
+
+## Limitations
+1. **Exclusion of Important Variables**: 
+The models only includes 4 predictors (bank rate, metal BCPI, energy BCPI, and total BCPI), omitting other relevant variables that could influence the USD/CAD exchange rate. Factors such as geopolitical events, inflation rates, oil prices, and global market sentiment may lead to fluctuations in currency but are not accounted for in the current model. This exclusion could limit the model’s ability to capture the full range of drivers influencing exchange rates.
+
+2. **Simplified Assumptions**: 
+The model assumes linear relationships between predictors and the dependent variable, which may not fully reflect the complexity of real-world exchange rate dynamics. Economic relationships can often be non-linear, and there may be interactions between predictors (e.g., the combined effects of bank rates and BCPI on exchange rates) that are not captured in this linear model. Further exploration of interaction terms or more complex modeling techniques (e.g., non-linear models) could provide a more accurate representation of the underlying dynamics.
+
+3. **Lack of Robustness to Structural Changes**: 
+Economic structures and market dynamics can change due to factors like policy shifts, technological advancements, or economic crises. This model may not be robust to such structural breaks, and its performance could deteriorate if significant changes in the economic environment occur.
+
+## Model Validation
+
+- **Out of Sample test**: To evaluate the models’ ability to generalize to unseen data, we performed out-of-sample testing by splitting the dataset into training (80%) and testing (20%) sets. From @fig-out-of-sample-test, the First Model, which includes weekly_bank_rate, weekly_metal_bcpi, and weekly_energy_bcpi, achieved an RMSE of 0.0231 and an MAE of 0.0168, outperforming the Second Model (which includes weekly_bank_rate and weekly_total_bcpi) with an RMSE of 0.0239 and an MAE of 0.0174. These results suggest that the First Model provides slightly better predictive accuracy by capturing the distinct effects of the BCPI components.
 
 ```{r}
 #| echo: false
 #| eval: true
-#| warning: false
 #| message: false
+#| warning: false
+#| label: fig-out-of-sample-test
+#| fig-cap: "Comparison of prediction performance between two regression models using RMSE and MAE metrics. The First Model, which includes bank rate, metal BCPI, and energy BCPI as predictors, performs slightly better (RMSE = 0.0231, MAE = 0.0168) than the Second Model, which includes bank rate and total BCPI (RMSE = 0.0239, MAE = 0.0174). This suggests that including disaggregated BCPI components may improve model accuracy."
+#| layout-ncol: 1
+# Split the dataset into training and testing sets
+set.seed(886) # Set the random seed to ensure reproducible results
+train_indices <- sample(1:nrow(analysis_data), size = 0.8 * nrow(analysis_data))
+train_data <- analysis_data[train_indices, ]
+test_data <- analysis_data[-train_indices, ]
+
+# Fit the model on the training set
+model_train1 <- lm(weekly_avg_usd_vs_cad ~ weekly_bank_rate + weekly_metal_bcpi + weekly_energy_bcpi, data = train_data)
+model_train2 <- lm(weekly_avg_usd_vs_cad ~ weekly_bank_rate + weekly_total_bcpi, data = train_data)
+
+# Make predictions on the test set
+test_predictions1 <- predict(model_train1, newdata = test_data)
+test_predictions2 <- predict(model_train2, newdata = test_data)
+
+# Calculating RMSE and MAE
+rmse1 <- round(sqrt(mean((test_data$weekly_avg_usd_vs_cad - test_predictions1)^2)), 4)
+mae1 <- round(mean(abs(test_data$weekly_avg_usd_vs_cad - test_predictions1)), 4)
+
+rmse2 <- round(sqrt(mean((test_data$weekly_avg_usd_vs_cad - test_predictions2)^2)), 4)
+mae2 <- round(mean(abs(test_data$weekly_avg_usd_vs_cad - test_predictions2)), 4)
+
+# Creating tabular data
+results <- data.frame(
+  Model = c("First Model", "Second Model"),
+  RMSE = c(rmse1, rmse2),
+  MAE = c(mae1, mae2)
+)
+# Output results in table format
+results %>%
+    kbl(
+    #caption = "Summary statistics for key variables" #'Summary statistics for key variables',
+  ) %>%
+  kable_styling(
+    full_width = FALSE, position = "center",
+    latex_options = "scale_down"
+  ) %>%
+  kable_classic(full_width = FALSE, html_font = "Cambria")
 ```
+
+- **Multicollinearity Check**: @fig-vif1 and @fig-vif2 shows low Variance Inflation Factor (VIF) values for all predictors in both models, ensuring that the variables are not highly correlated. This indicates that the coefficient estimates are stable and interpretable, allowing us to identify the individual contributions of predictors to the exchange rate.
+
+- **Model Summary**: From @tbl-modelresults, Both models demonstrated strong overall fit, with R² values of 0.831 and 0.824, respectively, and adjusted R² values slightly lower due to model complexity. The inclusion of additional predictors in the First Model results in slightly higher explanatory power. The Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC) also indicate that the First Model performs better despite its increased complexity. The residual standard errors are similar, reflecting consistent performance across both models.
+
+# Results {#sec-result}
+The primary objective of this analysis was to investigate the key drivers of the USD/CAD exchange rate, focusing on the influence of interest rates, metal BCPI, energy BCPI, and total BCPI. To achieve this, we developed two multiple linear regression models to predict the weekly exchange rate and assess the impact of these economic variables.
+
+## Model Performance
+Both models performed well in terms of predictive accuracy. By @fig-out-of-sample-test, the first model (which includes metal and energy BCPI) had an RMSE of 0.0231 and an MAE of 0.0168, while the second model (which includes total BCPI) showed an RMSE of 0.0239 and an MAE of 0.0174. Given that these values are relatively low and similar across both models, it indicates that the models are accurate in predicting the USD/CAD exchange rate, with only minor differences in performance.
+
+## Coefficients and Interpretation
+1. **Bank Rate**: By @tbl-modelresults, both models show a positive relationship between the **bank rate** and the exchange rate. In the first model, a 1% increase in the **bank rate** results in a 0.0241 increase in the exchange rate, and the second model shows a 0.0224 increase. This suggests that a higher **bank rate** tends to lead to a weaker Canadian dollar, as the exchange rate rises. This relationship is somewhat counterintuitive, as traditional economic theory suggests that higher interest rates should strengthen the currency. This observation will be further discussed in the @sec-discussion. 
+
+2. **BCPI Components (Metal, Energy, and Total)**: From @tbl-modelresults, the coefficients for the BCPI components are quite small but still statistically significant:
+
+   - **Metal BCPI**: A 1-point increase in the **metal BCPI** results in a 0.0001 increase in the exchange rate.
+   
+   - **Energy BCPI**: A 1-point increase in the **energy BCPI** leads to a decrease of 0.00002 in the exchange rate.
+   
+   - **Total BCPI**: A 1-point increase in the **total BCPI** results in a 0.000003 increase in the exchange rate.
+
+Although the coefficients for BCPI components are relatively low, this could be attributed to the large range and average values of these indices as shown in @fig-data-sum. The **weekly energy BCPI** in particular has a broad span, with values ranging from 874.12 to over 2282.35. Thus, these results still indicate that commodity prices have a noticeable influence on the exchange rate.
 
 ```{r}
 #| echo: false
 #| eval: true
 #| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
+#| tbl-cap: "Comparison of two regression models for the CAD/USD exchange rate. The weekly bank rate and metal BCPI have positive coefficients, indicating a depreciation effect on the Canadian dollar, while energy BCPI shows a negative coefficient, suggesting an appreciation effect. Total BCPI has minimal impact. Both models demonstrate strong explanatory power, with R² values above 0.82."
 #| warning: false
-
+modelsummary(list("First Model" = model, "Second Model" = model2), fmt = "%.6f")
 ```
 
+# Discussion {#sec-discussion}
 
+This study aimed to investigate the factors influencing the USD/CAD exchange rate, with a particular focus on the role of interest rates and commodity prices, as measured by the Bank of Canada’s Commodity Price Index (BCPI). We used regression analysis to assess the relationship between the exchange rate and variables such as the bank rate, BCPI categories (total, energy, and metal). Based on the findings, this section will discuss the findings, limitations, and potential directions for future research.
 
+## Key Findings
+This paper explored the relationship between the **bank rate**, **commodity prices**, and the USD/CAD exchange rate. The results suggest that the **bank rate** and **commodity price indices** are significant factors influencing exchange rate fluctuations. Notably, the **bank rate** has a positive relationship with the USD/CAD exchange rate, indicating that higher rates are associated with a weaker Canadian dollar. This outcome is contrary to traditional economic theory, where we would expect higher interest rates to lead to a stronger currency. 
 
-# Discussion
+However, the observed results may be driven by complex underlying factors that were not captured by the model. Specifically, one potential explanation for this unexpected finding lies in **causal relationships**. In economic studies, it is often difficult to definitively establish the direction of causality between variables. Although theory suggests that higher interest rates should attract capital inflows and thus appreciate the domestic currency, in reality, it is possible that exchange rate fluctuations themselves may prompt adjustments in the **bank rate**. For example, the central bank might alter interest rates in response to exchange rate pressures to stabilize the economy.
 
-## First discussion point {#sec-first-point}
+## Limitations
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+- **Omitted Variables: ** One limitation of this study is the potential for **omitted variables** that could influence the USD/CAD exchange rate. For example, the analysis did not consider factors such as **economic growth**, **global political events**, or **international trade relations**, all of which can significantly affect the value of a currency. The exclusion of these factors might have led to an incomplete understanding of the exchange rate dynamics.
 
-## Second discussion point
+- **Causality Issues: ** Another limitation arises from the difficulty of establishing clear **causal relationships** between the variables. While the model suggests that higher interest rates correlate with a weaker Canadian dollar, it is also possible that fluctuations in the exchange rate could influence the interest rate decisions, creating a **reverse causality**. For example, the Canadian central bank might adjust the bank rate in response to exchange rate pressures, rather than exchange rates reacting directly to changes in interest rates.
 
-Please don't use these as sub-heading labels - change them to be what your point actually is.
+- **Lag Effects: ** The model did not account for potential **lag effects** of interest rate changes on exchange rates. It is hard for monetary policy actions, such as changes in interest rates, to have an immediate impact on the economy and the exchange rate. The effects of interest rate adjustments might take several periods to materialize fully. Future models could consider the inclusion of lagged variables to capture these delayed effects.
 
-## Third discussion point
+- **Economic Context: ** The study did not fully explore the broader macroeconomic context in which the exchange rate operates. Factors such as the fiscal policies, global economic conditions, and geopolitical events in USA could have significant impacts on the USA/CAD exchange rate but were not included in the model. These factors should be considered in future research to provide a more comprehensive understanding of exchange rate movements.
 
-## Weaknesses and next steps
+## Future Research Directions
 
-Weaknesses and next steps should also be included.
+- **Expanding the Model**: Future research could incorporate additional variables, such as economic growth, trade balances, and global economic indicators, to provide a more complete picture of the factors affecting the USD/CAD exchange rate.
+
+- **Causal Analysis**: Exploring the causal relationships between interest rates and exchange rates through more complex models (e.g., Granger causality tests or vector autoregression models) could provide clearer evidence on how these variables interact over time.
+
+- **Exploring Lagged Effects**: Incorporating lagged variables for interest rates and other key indicators could help better capture the delayed effects of monetary policy on exchange rates.
+
+- **Global Context**: Future studies could examine the effects of global economic conditions and geopolitical factors on the exchange rate, which would allow for a deeper understanding of the broader context in which the USD/CAD exchange rate is determined.
 
 \newpage
 
 \appendix
 
-# Appendix {-}
+# Appendix {#sec-appx}
 
 
-# Additional data details
 
-# Model details {#sec-model-details}
+## Additional data details
 
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-#pp_check(first_model) +
-#  theme_classic() +
-#  theme(legend.position = "bottom")
-
-#posterior_vs_prior(first_model) +
-#  theme_minimal() +
-#  scale_color_brewer(palette = "Set1") +
-#  theme(legend.position = "bottom") +
-#  coord_flip()
-```
 
 ## Diagnostics
 
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-residuals-fitted
+#| fig-cap: "Residuals vs Fitted Values for the first (left) and second (right) models. The residuals are evenly distributed around zero, indicating no clear pattern, which supports the assumption of homoscedasticity (constant variance)."
+#| fig-width: 10
+par(mfrow = c(1, 2))
+plot(model$fitted.values, model$residuals,
+     xlab = "Fitted Values", ylab = "Residuals",
+     main = "Residuals vs Fitted Value (first model)")
+abline(h = 0, col = "red")
 
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
+plot(model2$fitted.values, model2$residuals,
+     xlab = "Fitted Values", ylab = "Residuals",
+     main = "Residuals vs Fitted Values (second model)")
+abline(h = 0, col = "red")
+```
+
 
 ```{r}
 #| echo: false
 #| eval: true
 #| message: false
 #| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-#plot(first_model, "trace")
-
-#plot(first_model, "rhat")
+#| label: fig-qq-plot
+#| fig-cap: "Normal Q-Q Plots for the first (left) and second (right) models. The points closely align with the diagonal line, supporting the assumption that residuals follow a normal distribution."
+#| fig-width: 10
+par(mfrow = c(1, 2))
+qqnorm(model$residuals)
+qqline(model$residuals, col = "red")
+qqnorm(model2$residuals)
+qqline(model2$residuals, col = "red")
 ```
 
 
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-residuals-time
+#| fig-cap: "Residuals vs Time for the first (left) and second (right) models. The residuals fluctuate randomly around zero over time, showing no clear trends, which supports the assumption of no autocorrelation in the residuals"
+#| fig-width: 10
+par(mfrow = c(1, 2))
+plot(1:length(model$residuals), model$residuals,
+     xlab = "Time", ylab = "Residuals", type = "l", main = "Residuals vs Time")
+abline(h = 0, col = "red")
+plot(1:length(model2$residuals), model2$residuals,
+     xlab = "Time", ylab = "Residuals", type = "l", main = "Residuals vs Time")
+abline(h = 0, col = "red")
+```
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-vif1
+#| fig-cap: "Variance Inflation Factor (VIF) values for all predictors in the first models are below 5, indicating that multicollinearity is not a concern in these models."
+#| layout-ncol: 1
+vif_result <- vif(model)
+vif_result_df <- data.frame(vif_result)
+rownames(vif_result_df) <- c("weekly bank rate", "weekly metal BCPI", "weekly energy BCPI")
+
+vif_result_df <- round(vif_result_df, 3)
+vif_result_df %>%
+  kbl()# %>%
+  #kable_styling(latex_options = "scale_down")  # Adjust if needed
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-vif2
+#| fig-cap: "Variance Inflation Factor (VIF) values for all predictors in second models are below 5, indicating that multicollinearity is not a concern in these models."
+#| layout-ncol: 1
+vif_result2 <- vif(model2)
+vif_result_df2 <- data.frame(vif_result2)
+vif_result_df2 <- round(vif_result_df2, 3)
+rownames(vif_result_df2) <- c("weekly bank rate", "weekly total BCPI")
+vif_result_df2 %>%
+  kbl()
+```
 
 \newpage
 
+## Additional Tables & Graphs
 
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-data-sum
+#| fig-cap: "Summary statistics for key variables in the analysis, including weekly bank rate, USD/CAD exchange rate, and BCPI categories (total, energy, and metal), showing minimum, maximum, mean, and variance"
+# select variables
+selected_columns <- c("weekly_bank_rate", 
+                      "weekly_avg_usd_vs_cad", 
+                      "weekly_total_bcpi", 
+                      "weekly_energy_bcpi", 
+                      "weekly_metal_bcpi")
+# calculate min, max, mean, var
+summary_stats <- sapply(analysis_data[, selected_columns], function(x) {
+  c(min = min(x, na.rm = TRUE),
+    max = max(x, na.rm = TRUE),
+    mean = mean(x, na.rm = TRUE),
+    variance = var(x, na.rm = TRUE))
+})
+colnames(summary_stats) <- c("weekly bank rate", 
+                      "weekly average USD/CAD", 
+                      "weekly total BCPI", 
+                      "weekly energy BCPI", 
+                      "weekly metal BCPI")
+# Convert to data frame
+summary_stats_df <- as.data.frame(t(summary_stats))
+#summary_stats_df <- round(summary_stats_df, 2)
+summary_stats_df <- summary_stats_df %>% 
+  mutate(across(everything(), ~ formatC(.x, format = "f", big.mark = ",", digits = 2)))
+
+# Create the table and apply styling
+summary_stats_df %>%
+  kable() %>%
+  kable_styling(latex_options = "scale_down")  # Adjust if needed
+
+```
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-width: 8
+#| fig-cap: "Visualization of coefficient estimates and 95% confidence intervals from two regression models predicting the USD/CAD exchange rate. The weekly bank rate shows a consistent and significant positive impact, while the BCPI categories exhibit smaller effects. Energy BCPI has a slightly negative estimate, indicating a potential appreciating influence on the Canadian dollar, while metal BCPI has a small positive effect. Total BCPI demonstrates minimal influence."
+modelplot(list("First Model" = model, "Second Model" = model2), coef_map = c("weekly_bank_rate" = "Bank Rate", 
+                                            "weekly_metal_bcpi" = "Metal BCPI", 
+                                            "weekly_energy_bcpi" = "Energy BCPI", 
+                                            "weekly_total_bcpi" = "Total BCPI")) +
+  ggtitle("Coefficient Estimates for Predicting USD/CAD Exchange Rate") +
+  theme_minimal()
+```
+\newpage
+## Idealized Methodology
+
+## Idealized Survey
+
+\newpage
 # References
-
-
