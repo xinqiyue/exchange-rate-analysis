@@ -49,8 +49,8 @@ test_that("'weekly_energy_bcpi' is numeric", {
   expect_type(analysis_data$weekly_energy_bcpi, "double")
 })
 
-test_that("'weekly_metel_bcpi' is numeric", {
-  expect_type(analysis_data$weekly_metel_bcpi, "double")
+test_that("'weekly_metal_bcpi' is numeric", {
+  expect_type(analysis_data$weekly_metal_bcpi, "double")
 })
 
 # 5. Test that there are no missing values in the dataset
@@ -69,7 +69,7 @@ test_that("no empty strings or NAs in any column", {
   expect_true(all(!is.na(analysis_data$weekly_avg_usd_vs_cad) | analysis_data$weekly_avg_usd_vs_cad != ""))
   expect_true(all(!is.na(analysis_data$weekly_total_bcpi) | analysis_data$weekly_total_bcpi != ""))
   expect_true(all(!is.na(analysis_data$weekly_energy_bcpi) | analysis_data$weekly_energy_bcpi != ""))
-  expect_true(all(!is.na(analysis_data$weekly_metel_bcpi) | analysis_data$weekly_metel_bcpi != ""))
+  expect_true(all(!is.na(analysis_data$weekly_metal_bcpi) | analysis_data$weekly_metal_bcpi != ""))
 })
 
 # 8. Test that numeric columns contain only valid numeric values (no characters or invalid entries)
@@ -78,7 +78,7 @@ test_that("numeric columns contain valid numeric values", {
   expect_true(all(is.numeric(analysis_data$weekly_avg_usd_vs_cad)))
   expect_true(all(is.numeric(analysis_data$weekly_total_bcpi)))
   expect_true(all(is.numeric(analysis_data$weekly_energy_bcpi)))
-  expect_true(all(is.numeric(analysis_data$weekly_metel_bcpi)))
+  expect_true(all(is.numeric(analysis_data$weekly_metal_bcpi)))
 })
 
 

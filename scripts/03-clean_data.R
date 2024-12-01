@@ -48,7 +48,7 @@ weekly_BCPI_data <- weekly_BCPI_data |>
   filter(date > as.Date("2021-01-01")) |> # Filter rows after January 1, 2021
   rename(weekly_total_bcpi = w_bcpi, 
          weekly_energy_bcpi = w_ener, 
-         weekly_metel_bcpi = w_mtls)
+         weekly_metal_bcpi = w_mtls)
 
 # 4. Combine all datasets by date
 cleaned_data <- weekly_bank_rate_data |>
@@ -62,14 +62,14 @@ cleaned_data <- cleaned_data |>
 # Convert columns to numeric and remove rows with NA after conversion
 cleaned_data$weekly_total_bcpi <- as.numeric(cleaned_data$weekly_total_bcpi)
 cleaned_data$weekly_energy_bcpi <- as.numeric(cleaned_data$weekly_energy_bcpi)
-cleaned_data$weekly_metel_bcpi <- as.numeric(cleaned_data$weekly_metel_bcpi)
+cleaned_data$weekly_metal_bcpi <- as.numeric(cleaned_data$weekly_metal_bcpi)
 
 # Remove rows where any of the numeric columns are NA (after conversion)
 cleaned_data <- cleaned_data |> 
   filter(
     !is.na(weekly_total_bcpi) & 
       !is.na(weekly_energy_bcpi) & 
-      !is.na(weekly_metel_bcpi)
+      !is.na(weekly_metal_bcpi)
   )
 
 #### Save data ####
