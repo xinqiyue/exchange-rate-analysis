@@ -1,6 +1,6 @@
 ---
-title: "Comparing the Impact of BCPI and Interest Rates on the CAD/USD Exchange Rate: A Model-Based Analysis of Key Drivers"
-subtitle: "Higher bank rates and commodity prices weaken the Canadian dollar, while rising energy prices strengthen it."
+title: "Modeling the Impact of Commodity Prices and Interest Rates on the CAD/USD Exchange Rate: An Analysis of Key Drivers Using Bank Rate and BCPI"
+subtitle: "Increase in bank rate, overall prices and metal prices weaken the Canadian dollar, while rising energy prices strengthen it."
 author: 
   - Xinqi Yue
 thanks: "Code and data are available at: https://github.com/xinqiyue/exchange-rate-analysis."
@@ -850,8 +850,107 @@ modelplot(list("First Model" = model, "Second Model" = model2), coef_map = c("we
 ```
 \newpage
 ## Idealized Methodology
+This study aims to analyze the impact of commodity prices, interest rates, and key economic events on the USD/CAD exchange rate. The current dataset, based on weekly data, has limitations, including an inability to capture short-term fluctuations and reliance on a single commodity price index (BCPI) that may not cover all relevant price movements. Additionally, the Bank of Canada’s bank rate is used as a proxy for interest rates, but it may not reflect other rates affecting investments, such as consumer or business loan rates. These limitations could affect the accuracy of the analysis.
 
-## Idealized Survey
+### Population and Sampling Approach
 
+The **target population** consists of all economic factors that influence the USD/CAD exchange rate, including commodity prices, interest rates, and exchange rates. The **sampling frame** will include data from international financial markets, central banks, and commodity markets, focusing on:
+
+- Commodity prices from various sectors (energy, metals, agriculture).
+
+- Interest rates from central banks and financial institutions.
+
+- Exchange rates from multiple financial sources.
+
+The **sampling frame** will include data sources such as central banks, commodity markets, financial institutions, and global news platforms. Data will be sampled across various time periods to capture long-term trends and short-term fluctuations.
+
+We will use a **stratified sampling** method to ensure that the data represent all key sectors, interest rates, and exchange rate sources. The focus will be on:
+- Price level: Different commodities (energy, metals, agriculture, etc.).
+- Interest rate: Various interest rate types (e.g., central bank rates, consumer and business loan rates).
+- Exchange rates: Real-time exchange rates from multiple financial institutions.
+
+
+### Data Collection and Measurement
+
+To address the limitations of the current dataset, the following improvements are proposed:
+
+1. **Higher-Frequency Data**: 
+
+   - **Exchange Rates**: Daily exchange rate data for CAD/USD will be collected from financial platforms like Bloomberg, Reuters, and central banks (e.g., Bank of Canada). This will include rates from multiple institutions (e.g., commercial banks, currency exchanges).
+   - **Interest Rates**: Data on consumer loan rates, business loan rates, and global interest rates (e.g., U.S. Federal Reserve rates, European Central Bank rates) will be collected from central banks, commercial banks, and financial platforms.
+   **Variables Collected**:  
+   - **Exchange rates**: CAD/USD rates from multiple sources, such as commercial banks, forex markets, and central banks.
+   - **Interest rates**: Data on various types of interest rates: Bank of Canada’s overnight rate, U.S. Federal Reserve’s rate, consumer loan rates, business loan rates, and global bond yields.
+   
+   **Advantage**: These data points will capture daily market fluctuations, allowing for a more granular view of interest rate and exchange rate dynamics.
+
+2. **Expanded Commodity Price Data**:  
+   - In addition to the BCPI, we will collect data from the **Global Commodity Price Index (GCPI)** and sector-specific indices (e.g., oil prices, natural gas, precious metals, and agricultural products). This will include daily or weekly prices from global commodity exchanges like the New York Mercantile Exchange (NYMEX) and London Metal Exchange (LME).
+   
+   **Variables Collected**:  
+   - **Commodity prices**: Daily or weekly prices for energy commodities (oil, natural gas), metals (gold, silver, copper), and agricultural products (wheat, corn, soybeans).
+   - **Commodity index values**: GCPI and sector-specific price indices for comprehensive market coverage.
+
+   **Advantage**: This will provide a more accurate representation of how fluctuations in various commodity markets affect exchange rates.
+
+3. **Event-Driven Data**:  
+   - Major events, such as **U.S. presidential elections**, **trade policy changes**, and **commodity price shocks**, will be tracked. These events will be identified through news outlets, government reports, and financial news platforms. The impact of these events on the CAD/USD exchange rate will be measured by examining pre- and post-event exchange rate movements.
+   
+   **Variables Collected**:  
+   - **Event indicators**: Data will include timestamps for events like U.S. elections, trade agreements, and major commodity price changes.
+   - **Exchange rate reactions**: Immediate changes in exchange rates before and after significant events.
+
+   **Advantage**: This will allow for direct analysis of how geopolitical and economic events affect currency markets.
+
+4. **Real-Time Data**:  
+   - Real-time exchange rates and interest rates will be obtained from financial platforms like Bloomberg, Reuters, and government releases. This will include high-frequency data (e.g., every minute or hourly data) to capture immediate market reactions to economic news and events.
+   
+   **Variables Collected**:  
+   - **Real-time exchange rates**: CAD/USD exchange rate data collected from multiple financial institutions in real-time.
+   - **Real-time interest rates**: Instant updates on global interest rates, especially from major central banks and commercial financial entities.
+
+   **Advantage**: Real-time data will enable precise analysis of short-term fluctuations and market responses to economic news.
+
+### Conclusion
+
+The idealized methodology will improve upon the current dataset by incorporating higher-frequency data on exchange rates and interest rates, expanding commodity price coverage, and integrating event-driven data to assess the influence of global events. These improvements will address the limitations of the existing weekly data and provide a more detailed and accurate analysis of the factors driving the CAD/USD exchange rate.
+
+
+## Methodology Overview and Evaluation for BCPI data set
+
+The Bank of Canada Commodity Price Index (BCPI) uses a chain Fisher price index to track the transaction prices of 26 commodities produced in Canada and sold in global markets. These commodities cover a wide range of categories, including energy, metals, minerals, forestry, agriculture, and fisheries. The BCPI employs several data sources and methodologies to construct its index.
+
+### Data Collection and Processing Methodology
+The BCPI relies on data primarily from Statistics Canada’s input-output (IO) tables, with supplementary sources used when IO disaggregation is insufficient. The key methodology steps include:
+
+- **Commodity Prices**: The BCPI tracks spot or transaction prices in U.S. dollars for individual commodities. These prices are averaged over specific time periods (e.g., daily, weekly, monthly) to account for price fluctuations.
+  
+- **Weighting**: The weight of each commodity in the index is derived from Canadian production values, which are adjusted over time using data from various sources such as the National Energy Board and Statistics Canada. The methodology incorporates changes in commodity prices and proxies for production volume.
+  
+- **Projection of Weights**: The current methodology projects weights forward from the Input-Output reference year (2018) by approximating commodity value changes through commodity price adjustments and production volume proxies. Weights are reassessed four times a year to reflect the most recent price projections.
+
+- **Revisions and Adjustments**: The methodology also allows for historical revisions when more up-to-date data becomes available. For instance, the coal price series and some agricultural prices have undergone revisions in the past.
+
+### Strengths of the BCPI Methodology
+The BCPI methodology has several strengths:
+
+1. **Coverage**: By tracking a wide range of commodities, the BCPI provides an overview of Canadian market trends.
+  
+2. **Regular Updates**: The BCPI supports weekly, quarterly and annually updates, ensuring that the weights and data reflect the short-term and long-term current price and production trends.
+  
+3. **Use of Reliable Sources**: The index relies on reputable and recognized data sources, including Statistics Canada, the National Energy Board, and the New York Mercantile Exchange, enhancing the reliability and credibility.
+
+4. **Transparent Weighting Methodology**: The approach for determining commodity weights through production values and price proxies is transparent and well-documented, allowing users to understand how the index is constructed.
+
+### Limitations of the BCPI Methodology
+1. **Lag in Data Availability**: Since the index uses input-output tables that are updated with a lag, the most recent data may not always be included in the BCPI, potentially leading to outdated weights.
+  
+2. **Dependence on Proxy Data**: For certain commodities, production volumes are estimated using proxies, which may not always fully capture the complexities of Canadian commodity production, especially in sectors with high variability or limited data.
+
+3. **Historical Data Revisions**: The revision of past data, such as changes to coal price series or shifts in the source of barley prices, could cause inconsistencies in historical comparisons, requiring caution when using the BCPI for longitudinal analysis.
+
+4. **Commodity Price Volatility**: The BCPI is sensitive to fluctuations in commodity prices, which can be influenced by a wide range of global factors. This volatility could lead to large swings in the index over short periods, making it challenging to capture long-term trends.
+
+Overall, the BCPI methodology provides useful information on Canadian pricing. However, its effectiveness may be impacted by data lags, the use of proxies for commodity production volumes, and periodic revisions..
 \newpage
 # References

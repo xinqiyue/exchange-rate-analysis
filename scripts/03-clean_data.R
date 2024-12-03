@@ -46,6 +46,7 @@ weekly_BCPI_data <- weekly_BCPI_data |>
   tidyr::drop_na() |> # Remove rows with missing values
   mutate(date = ymd(date)) |> # Convert the date column to Date format
   filter(date > as.Date("2021-01-01")) |> # Filter rows after January 1, 2021
+  filter(date < as.Date("2024-12-01")) |>
   rename(weekly_total_bcpi = w_bcpi, 
          weekly_energy_bcpi = w_ener, 
          weekly_metal_bcpi = w_mtls)
