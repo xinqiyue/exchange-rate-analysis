@@ -1,6 +1,6 @@
 #### Preamble ####
-# Purpose: simulates weekly economic data for USD/CAD exchange rates, 
-#           interest rates, BCPI, energy, and metals price indices over a 
+# Purpose: simulates weekly economic data for USD/CAD exchange rates,
+#           interest rates, BCPI, energy, and metals price indices over a
 #           two-year period and saves it as a CSV file for further analysis.
 # Author: Xinqi Yue
 # Date: 3 Dec 2024
@@ -23,10 +23,10 @@ set.seed(687)
 # Set date range (weekly data)
 date_range <- seq.Date(from = as.Date("2022-01-01"), to = as.Date("2023-12-31"), by = "week")
 
-#Simulated exchange rate data (assuming fluctuations are between 1.2 and 1.4)
+# Simulated exchange rate data (assuming fluctuations are between 1.2 and 1.4)
 usd_cad_rate <- runif(length(date_range), min = 1.2, max = 1.4)
 
-#Simulated interest rate data (assumed to be between 0.5% and 3%)
+# Simulated interest rate data (assumed to be between 0.5% and 3%)
 interest_rate <- runif(length(date_range), min = 0.5, max = 3.0)
 
 # Simulate BCPI data (assumed to be between 90 and 110)

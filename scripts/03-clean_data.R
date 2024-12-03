@@ -1,15 +1,15 @@
 #### Preamble ####
-# Purpose: clean and preprocess three raw datasets (weekly bank rate data, 
-#         daily exchange rate data, and weekly BCPI data), by standardizing 
-#         column names, removing missing values, aggregating data where 
-#         necessary (e.g., converting daily exchange rates to weekly averages), 
+# Purpose: clean and preprocess three raw datasets (weekly bank rate data,
+#         daily exchange rate data, and weekly BCPI data), by standardizing
+#         column names, removing missing values, aggregating data where
+#         necessary (e.g., converting daily exchange rates to weekly averages),
 #         and merging the datasets into a single cleaned data frame. The final
 #         cleaned dataset is then saved in Parquet format for analysis.
 # Author: Xinqi Yue
 # Date: 3 Dec 2024
 # Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 
+# Pre-requisites:
 #   - The `tidyverse`, `lubridate` and `arrow` package must be installed
 #   - 02-download_data.R must been run first
 # Any other information needed? Make sure you are in the `exchange_rate_analysis` rproj
@@ -42,21 +42,23 @@ weekly_exchange_rate_data <- daily_exchange_rate_data |>
   mutate(
     date = date + days(3 - wday(date, week_start = 1)) # Group by week
   ) |>
-  group_by(date) |>  # Group by the new weekly column
+  group_by(date) |> # Group by the new weekly column
   summarise(weekly_avg_usd_vs_cad = mean(usd_vs_cad, na.rm = TRUE)) |> # Calculate weekly averages
   ungroup() # Ungroup to finalize the data frame
 
 # 3. Clean weekly_BCPI_data and select specific columns
-weekly_BCPI_data <- weekly_BCPI_data |> 
+weekly_BCPI_data <- weekly_BCPI_data |>
   janitor::clean_names() |> # Standardize column names
   select(date, w_bcpi, w_ener, w_mtls) |> # Keep only specified columns
   tidyr::drop_na() |> # Remove rows with missing values
   mutate(date = ymd(date)) |> # Convert the date column to Date format
   filter(date > as.Date("2021-01-01")) |> # Filter rows after January 1, 2021
   filter(date < as.Date("2024-12-01")) |>
-  rename(weekly_total_bcpi = w_bcpi, 
-         weekly_energy_bcpi = w_ener, 
-         weekly_metal_bcpi = w_mtls)
+  rename(
+    weekly_total_bcpi = w_bcpi,
+    weekly_energy_bcpi = w_ener,
+    weekly_metal_bcpi = w_mtls
+  )
 
 # 4. Combine all datasets by date
 cleaned_data <- weekly_bank_rate_data |>
@@ -64,7 +66,7 @@ cleaned_data <- weekly_bank_rate_data |>
   full_join(weekly_BCPI_data, by = "date") # Merge with BCPI data
 
 # Clean the combined data
-cleaned_data <- cleaned_data |> 
+cleaned_data <- cleaned_data |>
   tidyr::drop_na() # Remove rows with missing values
 
 # Convert columns to numeric and remove rows with NA after conversion
@@ -73,10 +75,10 @@ cleaned_data$weekly_energy_bcpi <- as.numeric(cleaned_data$weekly_energy_bcpi)
 cleaned_data$weekly_metal_bcpi <- as.numeric(cleaned_data$weekly_metal_bcpi)
 
 # Remove rows where any of the numeric columns are NA (after conversion)
-cleaned_data <- cleaned_data |> 
+cleaned_data <- cleaned_data |>
   filter(
-    !is.na(weekly_total_bcpi) & 
-      !is.na(weekly_energy_bcpi) & 
+    !is.na(weekly_total_bcpi) &
+      !is.na(weekly_energy_bcpi) &
       !is.na(weekly_metal_bcpi)
   )
 

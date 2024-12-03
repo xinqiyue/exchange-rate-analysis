@@ -4,7 +4,7 @@
 # Date: 3 Dec 2024
 # Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 
+# Pre-requisites:
 #   - The `tidyverse` package must be installed
 # Any other information needed? Make sure you are in the `exchange_rate_analysis` rproj
 
@@ -21,4 +21,3 @@ weekly_BCPI <- read_csv("https://www.bankofcanada.ca/valet/observations/group/BC
 write_csv(weekly_bank_rate, "data/01-raw_data/weekly_bank_rate_raw_data.csv")
 write_csv(daily_exchange_rate, "data/01-raw_data/daily_exchange_rate_raw_data.csv")
 write_csv(weekly_BCPI, "data/01-raw_data/weekly_BCPI_raw_data.csv")
-  

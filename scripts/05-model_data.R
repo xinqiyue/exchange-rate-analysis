@@ -1,12 +1,12 @@
 #### Preamble ####
-# Purpose:  fits two linear regression models on the dataset, evaluates their 
-#         performance using RMSE and MAE on the test set, and saves the models 
+# Purpose:  fits two linear regression models on the dataset, evaluates their
+#         performance using RMSE and MAE on the test set, and saves the models
 #         to disk for future use.
 # Author: Xinqi Yue
 # Date: 3 Dec 2024
 # Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 
+# Pre-requisites:
 #   - The `tidyverse` package must be installed
 #   - 02-download_data.R must been run first
 #   - 03-clean_data.R must been run Secondly

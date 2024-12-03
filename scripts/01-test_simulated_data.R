@@ -1,12 +1,12 @@
 #### Preamble ####
-# Purpose: load and validate a simulated dataset, ensuring it meets specific 
-#          criteria such as correct number of rows and columns, no missing or 
+# Purpose: load and validate a simulated dataset, ensuring it meets specific
+#          criteria such as correct number of rows and columns, no missing or
 #          empty values, and that the date column is in weekly intervals.
 # Author: Xinqi Yue
 # Date: 3 Dec 2024
 # Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 
+# Pre-requisites:
 #   - The `tidyverse` package must be installed
 #   - 00-simulate_data.R must have been run
 # Any other information needed? Make sure you are in the `exchange_rate_analysis` rproj
@@ -41,18 +41,30 @@ if (ncol(simulated_data) == 6) {
 }
 
 # Check if there are no empty strings or NA values in the relevant columns
-if (all(!is.na(simulated_data$Date) & simulated_data$Date != ""  # Check for missing values and empty strings in 'Date'
-        , na.rm = TRUE) &
-    all(!is.na(simulated_data$USD_CAD_Exchange_Rate) & simulated_data$USD_CAD_Exchange_Rate != ""  # 'USD_CAD_Exchange_Rate'
-        , na.rm = TRUE) &
-    all(!is.na(simulated_data$Interest_Rate) & simulated_data$Interest_Rate != ""  # 'Interest_Rate'
-        , na.rm = TRUE) &
-    all(!is.na(simulated_data$BCPI) & simulated_data$BCPI != ""  # 'BCPI'
-        , na.rm = TRUE) &
-    all(!is.na(simulated_data$Energy_Index) & simulated_data$Energy_Index != ""  # 'Energy_Index'
-        , na.rm = TRUE) &
-    all(!is.na(simulated_data$Metals_Index) & simulated_data$Metals_Index != ""  # 'Metals_Index'
-        , na.rm = TRUE)) {  # 'Metals_Index'
+if (all(!is.na(simulated_data$Date) & simulated_data$Date != "" # Check for missing values and empty strings in 'Date'
+  ,
+  na.rm = TRUE
+) &
+  all(!is.na(simulated_data$USD_CAD_Exchange_Rate) & simulated_data$USD_CAD_Exchange_Rate != "" # 'USD_CAD_Exchange_Rate'
+    ,
+    na.rm = TRUE
+  ) &
+  all(!is.na(simulated_data$Interest_Rate) & simulated_data$Interest_Rate != "" # 'Interest_Rate'
+    ,
+    na.rm = TRUE
+  ) &
+  all(!is.na(simulated_data$BCPI) & simulated_data$BCPI != "" # 'BCPI'
+    ,
+    na.rm = TRUE
+  ) &
+  all(!is.na(simulated_data$Energy_Index) & simulated_data$Energy_Index != "" # 'Energy_Index'
+    ,
+    na.rm = TRUE
+  ) &
+  all(!is.na(simulated_data$Metals_Index) & simulated_data$Metals_Index != "" # 'Metals_Index'
+    ,
+    na.rm = TRUE
+  )) { # 'Metals_Index'
   message("Test Passed: There are no empty strings or NA values in the columns.")
 } else {
   stop("Test Failed: There are empty strings or NA values in one or more columns.")
@@ -70,5 +82,3 @@ if (all(date_diff == 7, na.rm = TRUE)) {
 } else {
   stop("Test failed: Date is not weekly.")
 }
-
-

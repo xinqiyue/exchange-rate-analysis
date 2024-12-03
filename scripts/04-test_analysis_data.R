@@ -1,12 +1,12 @@
 #### Preamble ####
-# Purpose: performs quality checks on the analysis_data dataset, ensuring 
-#         the correct number of rows and columns, proper data types, 
+# Purpose: performs quality checks on the analysis_data dataset, ensuring
+#         the correct number of rows and columns, proper data types,
 #         no missing or empty values, and valid dates and numeric values.
 # Author: Xinqi Yue
 # Date: 3 Dec 2024
 # Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 
+# Pre-requisites:
 #   - The `tidyverse`, `testthat` and `dplyr` package must be installed
 #   - 02-download_data.R must been run first
 #   - 03-clean_data.R must been run Secondly
@@ -29,7 +29,7 @@ test_that("dataset has 204 rows", {
   expect_equal(nrow(analysis_data), 204)
 })
 
-test_that("dataset has 6 columns", {  # Assuming there are 6 columns
+test_that("dataset has 6 columns", { # Assuming there are 6 columns
   expect_equal(ncol(analysis_data), 6)
 })
 
@@ -85,5 +85,3 @@ test_that("numeric columns contain valid numeric values", {
   expect_true(all(is.numeric(analysis_data$weekly_energy_bcpi)))
   expect_true(all(is.numeric(analysis_data$weekly_metal_bcpi)))
 })
-
-
