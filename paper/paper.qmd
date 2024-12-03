@@ -59,7 +59,7 @@ The structure of this paper is as follows: @sec-intro provides an overview of th
 ## Software
 This paper used R [@citeR] for data analysis, including data download and clean, regression diagnostics, model set up and summaries, and data visualization.
 
-- **data cleaning** The tidyverse package was used for efficient data manipulation and visualization (@tidyverse), lubridate was employed for handling date-time operations (@lubridate), and arrow facilitated reading and writing large data sets in parquet format (@arrow).
+- **data cleaning** The tidyverse package was used for efficient data manipulation and visualization [@tidyverse], lubridate was employed for handling date-time operations [@lubridate], and arrow facilitated reading and writing large data sets in parquet format [@arrow].
 
 - **visualization**: Ggplot2 [@ggplot2], gridExtra [@gridExtra], knitr[@knitr] and kableExtra [@kableExtra] packages to generate and optimize the graphs and tables in this analysis.
 
