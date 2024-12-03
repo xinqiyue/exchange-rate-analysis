@@ -1,11 +1,16 @@
 #### Preamble ####
-# Purpose: Tests... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 26 September 2024 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: performs quality checks on the analysis_data dataset, ensuring 
+#         the correct number of rows and columns, proper data types, 
+#         no missing or empty values, and valid dates and numeric values.
+# Author: Xinqi Yue
+# Date: 3 Dec 2024
+# Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: 
+#   - The `tidyverse`, `testthat` and `dplyr` package must be installed
+#   - 02-download_data.R must been run first
+#   - 03-clean_data.R must been run Secondly
+# Any other information needed? Make sure you are in the `exchange_rate_analysis` rproj
 
 #### Workspace setup ####
 # Load necessary libraries

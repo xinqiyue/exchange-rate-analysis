@@ -68,7 +68,7 @@ This paper used R [@citeR] for data analysis, including data download and clean,
 # Data {#sec-data}
 
 ## Overview
-For this study, three primary data sets were used to explore the relationship between the Canadian dollar (CAD) and U.S. dollar (USD) exchange rate, commodity prices (via the Bank of Canada Commodity Price Index - BCPI), and interest rates. The data was collected from multiple publicly available sources: weekly exchange rates between the CAD and USD, weekly BCPI data from the Bank of Canada, and the Bank of Canada’s weekly interest rates. The exchange rate data set provides the value of the CAD against the USD [@bankofcanada_daily_exchange_rates], while the BCPI data set includes subcategories such as the total BCPI, energy BCPI, and metal BCPI [@bankofcanada_bcpi]. The interest rates data set provides the weekly bank rates set by the Bank of Canada [@BankOfCanadaInterestRates]. The BCPI is categorized into various types, with particular focus on energy and metal BCPI, as these sectors are main export areas for Canada. 
+For this study, three data sets were used to explore the relationship between the Canadian dollar (CAD) and U.S. dollar (USD) exchange rate, commodity prices (via the Bank of Canada Commodity Price Index - BCPI), and interest rates. The data was collected from multiple publicly available sources: weekly exchange rates between the CAD and USD, weekly BCPI data from the Bank of Canada, and the Bank of Canada’s weekly interest rates. The exchange rate data set provides the value of the CAD against the USD [@bankofcanada_daily_exchange_rates], while the BCPI data set includes subcategories such as the total BCPI, energy BCPI, and metal BCPI [@bankofcanada_bcpi]. The interest rates data set provides the weekly bank rates set by the Bank of Canada [@BankOfCanadaInterestRates]. The BCPI is categorized into various types, with particular focus on energy and metal BCPI, as these sectors are main export areas for Canada. 
 
 ## Measurement
 The data set used in this study includes variables related to exchange rates, bank rates, and the Bank of Canada Commodity Price Index (BCPI), which encompasses total, energy, and metal components. Below is a description of how these variables were measured and collected from their respective sources.
@@ -951,6 +951,7 @@ The BCPI methodology has several strengths:
 
 4. **Commodity Price Volatility**: The BCPI is sensitive to fluctuations in commodity prices, which can be influenced by a wide range of global factors. This volatility could lead to large swings in the index over short periods, making it challenging to capture long-term trends.
 
-Overall, the BCPI methodology provides useful information on Canadian pricing. However, its effectiveness may be impacted by data lags, the use of proxies for commodity production volumes, and periodic revisions..
+Overall, the BCPI methodology provides useful information on Canadian pricing. However, its effectiveness may be impacted by data lags, the use of proxies for commodity production volumes, and periodic revisions.
 \newpage
+
 # References

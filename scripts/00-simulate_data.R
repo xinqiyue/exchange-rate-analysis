@@ -1,12 +1,13 @@
 #### Preamble ####
-# Purpose: Simulates a dataset of Australian electoral divisions, including the 
-  #state and party that won each division.
-# Author: Rohan Alexander
-# Date: 26 September 2024
-# Contact: rohan.alexander@utoronto.ca
+# Purpose: simulates weekly economic data for USD/CAD exchange rates, 
+#           interest rates, BCPI, energy, and metals price indices over a 
+#           two-year period and saves it as a CSV file for further analysis.
+# Author: Xinqi Yue
+# Date: 3 Dec 2024
+# Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: The `tidyverse` package must be installed
-# Any other information needed? Make sure you are in the `starter_folder` rproj
+# Pre-requisites: The `tidyverse`, `dplyr`, `lubridate` and `tibble` package must be installed
+# Any other information needed? Make sure you are in the `exchange_rate_analysis` rproj
 
 
 #### Workspace setup ####

@@ -1,11 +1,18 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: clean and preprocess three raw datasets (weekly bank rate data, 
+#         daily exchange rate data, and weekly BCPI data), by standardizing 
+#         column names, removing missing values, aggregating data where 
+#         necessary (e.g., converting daily exchange rates to weekly averages), 
+#         and merging the datasets into a single cleaned data frame. The final
+#         cleaned dataset is then saved in Parquet format for analysis.
+# Author: Xinqi Yue
+# Date: 3 Dec 2024
+# Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: 
+#   - The `tidyverse`, `lubridate` and `arrow` package must be installed
+#   - 02-download_data.R must been run first
+# Any other information needed? Make sure you are in the `exchange_rate_analysis` rproj
 
 #### Workspace setup ####
 library(tidyverse)

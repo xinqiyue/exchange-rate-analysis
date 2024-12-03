@@ -1,11 +1,12 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Download the raw data sets.
+# Author: Xinqi Yue
+# Date: 3 Dec 2024
+# Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: 
+#   - The `tidyverse` package must be installed
+# Any other information needed? Make sure you are in the `exchange_rate_analysis` rproj
 
 
 #### Workspace setup ####
