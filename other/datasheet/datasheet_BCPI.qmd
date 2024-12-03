@@ -5,8 +5,6 @@ author:
   - Xinqi Yue
 thanks: "Code and data are available at: https://github.com/xinqiyue/exchange-rate-analysis.."
 date: today
-#date-format: "D MMMM YYYY"
-#abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
 format: pdf
 number-sections: true
 bibliography: ../../paper/references.bib
@@ -72,12 +70,13 @@ Extract of the questions from @gebru2021datasheets.
   - The absence of missing values allows for direct analysis without the need for imputation or handling of gaps.
 
 7. *Are relationships between individual instances made explicit (for example, users' movie ratings, social network links)? If so, please describe how these relationships are made explicit.*
-	The dataset includes temporal relationships between instances, as each row corresponds to a specific week.
+	The data set includes temporal relationships between instances, as each row corresponds to a specific week.
 
 8. *Are there recommended data splits (for example, training, development/validation, testing)? If so, please provide a description of these splits, explaining the rationale behind them.*
 	- No
 
 9. *Are there any errors, sources of noise, or redundancies in the dataset? If so, please provide a description.*
+
 	- **Errors**: No explicit errors have been identified in the data set. However, errors could arise from data entry inaccuracies or revisions in the source data.  
 	
   - **Sources of Noise**: Exchange rates and commodity prices may exhibit volatility due to market fluctuations, external shocks, or geopolitical events, introducing noise unrelated to the variables of interest.  
