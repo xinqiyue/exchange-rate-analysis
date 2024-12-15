@@ -86,7 +86,7 @@ The Total Bank of Canada Commodity Price Index (BCPI) represents the aggregated 
 The Energy BCPI includes the price movements of energy-related commodities such as crude oil, natural gas, and coal. The prices for these commodities are collected from a variety of sources, including the New York Mercantile Exchange (NYMEX) for oil and natural gas, and Kalibrate Canada Inc. for Western Canadian Select crude. The data is aggregated to form an index representing the overall price of energy commodities exported by Canada. The Energy BCPI is also measured in index points, with the same base year of 1972.
 
 ### Metal BCPI
-The Metal BCPI includes the price movements of metals and minerals such as gold, silver, copper, and nickel. The prices for these commodities are collected from the London Metal Exchange (LME) and other sources, such as the Handy and Harman base price for gold and silver. These prices are used to construct an index representing the overall price changes in the metal commodities produced in Canada. Similar to the Energy BCPI, the Metal BCPI is measured in index points with the base year set to 1972.
+The Metal BCPI includes the price movements of metals and minerals such as gold, silver, copper, and nickel. The prices for these commodities are collected from the London Metal Exchange (LME) and other sources, such as the Handy and Harman base price for gold and silver. These prices are used to construct an index representing the overall price changes in the metal commodities produced in Canada. Like the Energy BCPI, the Metal BCPI is measured in index points with the base year set to 1972.
 
 In summary, the measurement process involves collecting data from authoritative sources such as the Bank of Canada, the London Metal Exchange, and the New York Mercantile Exchange. The data is then processed into index points or percentage values to represent changes in exchange rates, interest rates, and commodity prices. The data is published on a regular basis with revisions made as new data becomes available.
 
@@ -169,7 +169,7 @@ ggplot(analysis_data, aes(x = date, y = weekly_bank_rate)) +
 
 ```
 
-@fig-bank-agaist-exchange shows the relationship between the Weekly Bank Rate and the Weekly Average USD/CAD Exchange Rate. The data points show a positive trend, and the linear regression line suggests that as the weekly bank rate increases, the USD/CAD exchange rate also tends to rise. This indicates a positive correlation between the two variables. The upward slope of the regression line suggests that higher bank rates may have a tendency to push the exchange rate higher.
+@fig-bank-agaist-exchange shows the relationship between the Weekly Bank Rate and the Weekly Average USD/CAD Exchange Rate. The data points show a positive trend, and the linear regression line suggests that as the weekly bank rate increases, the USD/CAD exchange rate also tends to rise. This indicates a positive correlation between the two variables. The upward slope of the regression line suggests that higher bank rates may tend to push the exchange rate higher.
 
 ```{r}
 #| echo: false
@@ -369,7 +369,7 @@ ggplot(analysis_data, aes(y = weekly_avg_usd_vs_cad, x = weekly_total_bcpi)) +
 Weekly Energy BCPI is defined as the price index of energy-related commodities such as crude oil, natural gas, and coal. Energy is one of the main sectors of Canada’s exports, and changes in energy prices may impact Canada’s economic performance and the strength of its currency.  
 - **Unit**: Index Points (base year 1972 = 100).
 
-@fig-energy-bcpi-and-exchange presents a dual y-axis plot displaying the Weekly Energy BCPI and the Weekly Average USD/CAD Exchange Rate. The Energy BCPI reaches its highest value around mid-2022 and gradually declines after that, showing a trend similar to the Total BCPI. The USD/CAD exchange rate fluctuates throughout the period, but there is no apparent direct relationship between the exchange rate and the Energy BCPI. This suggests that the changes in the energy-related BCPI do not correlate with fluctuations in the USD/CAD exchange rate during the observed time.
+@fig-energy-bcpi-and-exchange presents a dual y-axis plot displaying the Weekly Energy BCPI and the Weekly Average USD/CAD Exchange Rate. The Energy BCPI reaches its highest value around mid-2022 and gradually declines after that, showing a trend like the Total BCPI. The USD/CAD exchange rate fluctuates throughout the period, but there is no apparent direct relationship between the exchange rate and the Energy BCPI. This suggests that the changes in the energy-related BCPI do not correlate with fluctuations in the USD/CAD exchange rate during the observed time.
 
 ```{r}
 #| echo: false
@@ -443,7 +443,7 @@ ggplot(analysis_data, aes(y = weekly_avg_usd_vs_cad, x = weekly_energy_bcpi)) +
 Weekly Metal BCPI is the price index of metals and minerals such as gold, copper, nickel, and aluminum. These commodities are key components of Canada’s mining sector, and their price volatility may indirectly influence exchange rates.  
 - **Unit**: Index Points (base year 1972 = 100).  
 
-@fig-metal-bcpi-and-exchange illustrates the relationship between Weekly Metal BCPI and the USD/CAD exchange rate over time. The Metal BCPI shows a clear upward trend at the beginning, peaking in March 2023, and then decreasing. By February 2024, the index almost reaches its lowest point, similar to its level in January 2021, before beginning to rise again. The USD/CAD exchange rate is plotted on the secondary y-axis, but no strong correlation is observed between the two variables, suggesting that fluctuations in the Metal BCPI may directly align with movements in the exchange rate over this period.
+@fig-metal-bcpi-and-exchange illustrates the relationship between Weekly Metal BCPI and the USD/CAD exchange rate over time. The Metal BCPI shows a clear upward trend at the beginning, peaking in March 2023, and then decreasing. By February 2024, the index almost reaches its lowest point, like its level in January 2021, before beginning to rise again. The USD/CAD exchange rate is plotted on the secondary y-axis, but no strong correlation is observed between the two variables, suggesting that fluctuations in the Metal BCPI may directly align with movements in the exchange rate over this period.
 
 ```{r}
 #| label: fig-metal-bcpi-and-exchange
@@ -566,14 +566,14 @@ Overall, linear regression is the most effective model for this analysis due to 
 
 4. **No Multicollinearity**: The predictors used in the model are assumed not to be highly correlated with each other. High correlation between predictors can lead to multicollinearity, which can inflate the variance of the coefficient estimates and make it difficult to determine the individual effect of each predictor on the exchange rate. From @fig-vif1 and @fig-vif2, the Variance Inflation Factor (VIF) are low, which means the assumption is satisfied. 
 
-5. **Normality of Residuals**: The residuals of the model are assumed to be normally distributed. From @fig-qq-plot, the QQ plot is approximately a straight line, which indicates that the assumption is satisfied for both of the model. 
+5. **Normality of Residuals**: The residuals of the model are assumed to be normally distributed. From @fig-qq-plot, the QQ plot is approximately a straight line, which indicates that the assumption is satisfied for both models. 
 
 ## Limitations
 1. **Exclusion of Important Variables**: 
-The models only includes 4 predictors (bank rate, metal BCPI, energy BCPI, and total BCPI), omitting other relevant variables that could influence the USD/CAD exchange rate. Factors such as geopolitical events, inflation rates, oil prices, and global market sentiment may lead to fluctuations in currency but are not accounted for in the current model. This exclusion could limit the model’s ability to capture the full range of drivers influencing exchange rates.
+The models only include 4 predictors (bank rate, metal BCPI, energy BCPI, and total BCPI), omitting other relevant variables that could influence the USD/CAD exchange rate. Factors such as geopolitical events, inflation rates, oil prices, and global market sentiment may lead to fluctuations in currency but are not accounted for in the current model. This exclusion could limit the model’s ability to capture the full range of drivers influencing exchange rates.
 
 2. **Simplified Assumptions**: 
-The model assumes linear relationships between predictors and the dependent variable, which may not fully reflect the complexity of real-world exchange rate dynamics. Economic relationships can often be non-linear, and there may be interactions between predictors (e.g., the combined effects of bank rates and BCPI on exchange rates) that are not captured in this linear model. Further exploration of interaction terms or more complex modeling techniques (e.g., non-linear models) could provide a more accurate representation of the underlying dynamics.
+The model assumes linear relationships between predictors and the dependent variable, which may not fully reflect the complexity of real-world exchange rate dynamics. Economic relationships can often be non-linear, and there may be interactions between predictors (e.g., the combined effects of bank rates and BCPI on exchange rates) that are not captured in this linear model. Further usage of interaction terms or more complex modeling techniques (e.g., non-linear models) could provide a more accurate representation of the underlying dynamics.
 
 3. **Lack of Robustness to Structural Changes**: 
 Economic structures and market dynamics can change due to factors like policy shifts, technological advancements, or economic crises. This model may not be robust to such structural breaks, and its performance could deteriorate if significant changes in the economic environment occur.
@@ -631,7 +631,7 @@ results %>%
 
 - **Multicollinearity Check**: @fig-vif1 and @fig-vif2 shows low Variance Inflation Factor (VIF) values for all predictors in both models, ensuring that the variables are not highly correlated. This indicates that the coefficient estimates are stable and interpretable, allowing us to identify the individual contributions of predictors to the exchange rate.
 
-- **Model Summary**: From @tbl-modelresults, Both models demonstrated strong overall fit, with R² values of 0.831 and 0.824, respectively, and adjusted R² values slightly lower due to model complexity. The inclusion of additional predictors in the First Model results in slightly higher explanatory power. The Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC) also indicate that the First Model performs better despite its increased complexity. The residual standard errors are similar, reflecting consistent performance across both models.
+- **Model Summary**: From @tbl-modelresults, both models demonstrated strong overall fit, with R² values of 0.831 and 0.824, respectively, and adjusted R² values slightly lower due to model complexity. The inclusion of additional predictors in the First Model results in slightly higher explanatory power. The Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC) also indicate that the First Model performs better despite its increased complexity. The residual standard errors are similar, reflecting consistent performance across both models.
 
 # Results {#sec-result}
 The primary objective of this analysis was to investigate the key drivers of the USD/CAD exchange rate, focusing on the influence of interest rates, metal BCPI, energy BCPI, and total BCPI. To achieve this, we developed two multiple linear regression models to predict the weekly exchange rate and assess the impact of these economic variables.
@@ -650,7 +650,7 @@ Both models performed well in terms of predictive accuracy. By @fig-out-of-sampl
    
    - **Total BCPI**: A 1-point increase in the **total BCPI** results in a 0.000003 increase in the exchange rate.
 
-Although the coefficients for BCPI components are relatively low, this could be attributed to the large range and average values of these indices as shown in @fig-data-sum. The **weekly energy BCPI** in particular has a broad span, with values ranging from 874.12 to over 2282.35. Thus, these results still indicate that commodity prices have a noticeable influence on the exchange rate.
+Although the coefficients for BCPI components are relatively low, this could be attributed to the large range and average values of these indices as shown in @fig-data-sum. The **weekly energy BCPI** has a broad span, with values ranging from 874.12 to over 2282.35. Thus, these results still indicate that commodity prices have a noticeable influence on the exchange rate.
 
 ```{r}
 #| echo: false
@@ -668,7 +668,7 @@ This study aimed to investigate the factors influencing the USD/CAD exchange rat
 ## Key Findings
 This paper explored the relationship between the **bank rate**, **commodity prices**, and the USD/CAD exchange rate. The results suggest that the **bank rate** and **commodity price indices** are significant factors influencing exchange rate fluctuations. Notably, the **bank rate** has a positive relationship with the USD/CAD exchange rate, indicating that higher rates are associated with a weaker Canadian dollar. This outcome is contrary to traditional economic theory, where we would expect higher interest rates to lead to a stronger currency. 
 
-However, the observed results may be driven by complex underlying factors that were not captured by the model. Specifically, one potential explanation for this unexpected finding lies in **causal relationships**. In economic studies, it is often difficult to definitively establish the direction of causality between variables. Although theory suggests that higher interest rates should attract capital inflows and thus appreciate the domestic currency, in reality, it is possible that exchange rate fluctuations themselves may prompt adjustments in the **bank rate**. For example, the central bank might alter interest rates in response to exchange rate pressures to stabilize the economy.
+However, the observed results may be driven by complex underlying factors that were not captured by the model. Specifically, one potential explanation for this unexpected finding lies in **causal relationships**. In economic studies, it is often difficult to definitively establish the direction of causality between variables. Although theory suggests that higher interest rates should attract capital inflows and thus appreciate the domestic currency, it is possible that exchange rate fluctuations themselves may prompt adjustments in the **bank rate**. For example, the central bank might alter interest rates in response to exchange rate pressures to stabilize the economy.
 
 ## Limitations
 
@@ -678,7 +678,7 @@ However, the observed results may be driven by complex underlying factors that w
 
 - **Lag Effects: ** The model did not account for potential **lag effects** of interest rate changes on exchange rates. It is hard for monetary policy actions, such as changes in interest rates, to have an immediate impact on the economy and the exchange rate. The effects of interest rate adjustments might take several periods to materialize fully. Future models could consider the inclusion of lagged variables to capture these delayed effects.
 
-- **Economic Context: ** The study did not fully explore the broader macroeconomic context in which the exchange rate operates. Factors such as the fiscal policies, global economic conditions, and geopolitical events in USA could have significant impacts on the USA/CAD exchange rate but were not included in the model. These factors should be considered in future research to provide a more comprehensive understanding of exchange rate movements.
+- **Economic Context: ** The study did not fully explore the broader macroeconomic context in which the exchange rate operates. Factors such as the fiscal policies, global economic conditions, and geopolitical events in USA could have significant impacts on the USA/CAD exchange rate but were not included in the model. These factors should be considered in future research to provide a better understanding of exchange rate movements.
 
 ## Future Research Directions
 
@@ -889,7 +889,7 @@ To address the limitations of the current dataset, the following improvements ar
    
    **Variables Collected**:  
    - **Commodity prices**: Daily or weekly prices for energy commodities (oil, natural gas), metals (gold, silver, copper), and agricultural products (wheat, corn, soybeans).
-   - **Commodity index values**: GCPI and sector-specific price indices for comprehensive market coverage.
+   - **Commodity index values**: GCPI and sector-specific price indices for better market coverage.
 
    **Advantage**: This will provide a more accurate representation of how fluctuations in various commodity markets affect exchange rates.
 
