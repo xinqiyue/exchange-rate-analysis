@@ -764,7 +764,7 @@ abline(h = 0, col = "red")
 #| message: false
 #| warning: false
 #| label: fig-vif1
-#| fig-cap: "Variance Inflation Factor (VIF) values for all predictors in the first models are below 5, indicating that multicollinearity is not a concern in these models."
+#| fig-cap: "Variance Inflation Factor (VIF) values for all predictors in the first model are below 5, indicating that multicollinearity is not a concern in these models."
 #| layout-ncol: 1
 vif_result <- vif(model)
 vif_result_df <- data.frame(vif_result)
@@ -782,7 +782,7 @@ vif_result_df %>%
 #| message: false
 #| warning: false
 #| label: fig-vif2
-#| fig-cap: "Variance Inflation Factor (VIF) values for all predictors in second models are below 5, indicating that multicollinearity is not a concern in these models."
+#| fig-cap: "Variance Inflation Factor (VIF) values for all predictors in the second model are below 5, indicating that multicollinearity is not a concern in these models."
 #| layout-ncol: 1
 vif_result2 <- vif(model2)
 vif_result_df2 <- data.frame(vif_result2)
